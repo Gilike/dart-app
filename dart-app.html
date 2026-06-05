@@ -625,27 +625,65 @@ function getScoreError(s){
 
 // ===== VOICE =====
 const SOUNDS_BASE = 'https://gilike.github.io/dart-app/';
-let isSpeaking = false;
-const audioQueue = [];
+const audioCache = {};
+let currentAudio = null;
+let soundQueue = [];
+let isPlayingQueue = false;
+
+// Preload all sounds on startup
+const ALL_SOUNDS = [
+  'bust','scheckout','gameon','swinner','legwon','pubgame','s180',
+  'noscore','score','require',
+  'n1','n2','n3','n4','n5','n6','n7','n8','n9','n10',
+  'n11','n12','n13','n14','n15','n16','n17','n18','n19','n20',
+  'n30','n40','n50','n60','n70','n80','n90','n100','n100and'
+];
+
+function preloadSounds(){
+  ALL_SOUNDS.forEach(name => {
+    const audio = new Audio(SOUNDS_BASE + name + '.mp3');
+    audio.preload = 'auto';
+    audio.load();
+    audioCache[name] = audio;
+  });
+}
 
 function playSound(file){
   return new Promise((resolve) => {
-    const audio = new Audio(SOUNDS_BASE + file + '.mp3');
+    if(!file){ resolve(); return; }
+    // Use cached audio, clone it so it can overlap/restart
+    const src = SOUNDS_BASE + file + '.mp3';
+    const audio = new Audio(src);
+    currentAudio = audio;
     audio.onended = resolve;
-    audio.onerror = resolve; // skip missing files silently
+    audio.onerror = resolve;
     audio.play().catch(resolve);
   });
 }
 
+function stopAllSounds(){
+  if(currentAudio){
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+  }
+  soundQueue = [];
+  isPlayingQueue = false;
+}
+
 async function playSoundQueue(files){
   if(!voiceEnabled) return;
+  // Stop any currently playing sounds
+  stopAllSounds();
+  isPlayingQueue = true;
   for(const f of files){
+    if(!isPlayingQueue) break; // cancelled
     if(f) await playSound(f);
   }
+  isPlayingQueue = false;
 }
 
 function numToFiles(n){
-  // Returns array of sound file names to play for a number
   if(n === 180) return ['s180'];
   if(n === 0) return ['noscore'];
   const files = [];
@@ -669,8 +707,8 @@ function numToFiles(n){
 }
 
 function initVoice(){
-  // MP3 based voice system - no API key needed
-  // Test first sound to unlock audio on iOS
+  // Preload all MP3s for instant playback
+  preloadSounds();
 }
 
 function speak(text){
@@ -710,16 +748,14 @@ function announceScore(score, remaining, bust){
     playSoundQueue(['bust']); return;
   }
   if(remaining===0){
+    // Only say checkout - legwon/winner will play after
     playSoundQueue(['scheckout']); return;
   }
   if(score===0){
     playSoundQueue(['noscore']); return;
   }
-  // Build score sound files
   const scoreFiles = numToFiles(score);
-  // Add "score" after single digit (1-9)
   if(score >= 1 && score <= 9) scoreFiles.push('score');
-  // Add remaining if under 170
   if(remaining <= 170 && remaining > 0){
     const remFiles = numToFiles(remaining);
     playSoundQueue([...scoreFiles, 'require', ...remFiles]);
@@ -1016,8 +1052,13 @@ function submitScore(){
       const needed=Math.ceil(game.legs/2);
       player.legsWon++;
       saveLegToHistory(player.name);
-      if(player.legsWon>=needed){ endGame(player,false); return; }
-      playSoundQueue(['legwon']);
+      if(player.legsWon>=needed){
+        // Wait for checkout sound then play winner
+        setTimeout(()=>playSoundQueue(['swinner']), 1200);
+        endGame(player,false); return;
+      }
+      // Wait for checkout sound then play legwon
+      setTimeout(()=>playSoundQueue(['legwon']), 1200);
       showToast(`🎯 ${player.name} nyerte a lábat!`);
       resetLeg(); currentInput=''; renderGame(); return;
     }
