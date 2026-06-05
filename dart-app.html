@@ -119,13 +119,13 @@
   .pps-val.done{color:var(--green)}
 
   /* ROUND LOG */
-  .round-log{max-height:90px;overflow-y:auto}
+  .round-log{max-height:130px;overflow-y:auto}
   .round-log::-webkit-scrollbar{width:3px}
   .round-log::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-  .round-entry{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px}
-  .re-player{color:var(--muted);font-weight:500;min-width:65px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .re-score{color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:600}
-  .re-right{font-size:11px}
+  .round-entry{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px}
+  .re-player{color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:.5px;min-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .re-score{color:var(--text);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px}
+  .re-right{font-size:13px;font-family:'Barlow Condensed',sans-serif;font-weight:600}
   .re-right.ok{color:var(--green)}
   .re-right.bust{color:var(--accent)}
 
@@ -173,6 +173,24 @@
   .bracket-actions{display:flex;gap:5px;flex-wrap:wrap}
   .bracket-status{font-size:12px;padding:3px 7px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;font-weight:600}
   .bs-done{background:rgba(0,230,118,.1);color:var(--green)}
+
+  /* KNOCKOUT BRACKET */
+  .ko-round-title{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;color:var(--gold);margin:12px 0 7px}
+  .ko-match{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 13px;margin-bottom:7px;position:relative}
+  .ko-match.bye-match{opacity:.5;border-style:dashed}
+  .ko-players{display:flex;align-items:center;gap:8px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;text-transform:uppercase}
+  .ko-player{flex:1}
+  .ko-vs{color:var(--accent);font-size:12px;letter-spacing:2px}
+  .ko-seed{font-size:11px;color:var(--muted);font-weight:400;display:block;margin-top:1px}
+  .ko-status-done{color:var(--green);font-size:12px;margin-top:5px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px}
+  .ko-status-bye{color:var(--muted);font-size:12px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px}
+  .ko-actions{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+  .manual-pair-grid{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}
+  .pair-slot{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+  .pair-slot-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+  .pair-selects{display:flex;gap:7px;align-items:center}
+  .pair-selects select{flex:1;font-size:13px;padding:7px 10px}
+  .pair-vs-label{color:var(--accent);font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:2px}
 
   /* STANDINGS TABLE */
   .rr-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
@@ -246,8 +264,9 @@
   .toast.show{transform:translateX(-50%) translateY(0)}
 
   /* CHECKOUT HINT */
-  .checkout-hint{background:rgba(0,230,118,.07);border:1px solid rgba(0,230,118,.22);border-radius:8px;padding:7px 11px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--green);letter-spacing:.5px}
-  .checkout-hint strong{font-size:15px;display:block;margin-bottom:2px;letter-spacing:1px}
+  .checkout-hint{background:rgba(0,230,118,.1);border:2px solid rgba(0,230,118,.4);border-radius:10px;padding:10px 14px;margin-bottom:8px;font-family:'Barlow Condensed',sans-serif;color:var(--green);letter-spacing:.5px}
+  .checkout-hint strong{font-size:20px;display:block;margin-bottom:3px;letter-spacing:2px}
+  .checkout-hint span{font-size:16px;letter-spacing:1px}
 
   /* UNDO BUTTON */
   .undo-btn{background:rgba(79,195,247,.1);border:1px solid rgba(79,195,247,.25);border-radius:8px;color:var(--blue);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;padding:7px 13px;cursor:pointer;width:100%;text-align:center;margin-bottom:8px;text-transform:uppercase}
@@ -309,31 +328,36 @@
 <div id="screen-setup" class="screen">
   <button class="back-btn" onclick="showScreen('screen-home')">← VISSZA</button>
   <div class="section-title">MECCS <span>BEÁLLÍTÁS</span></div>
-  <div class="input-group">
-    <label class="input-label">Játékmód</label>
-    <select id="gameMode"><option value="501">501</option><option value="301">301</option></select>
-  </div>
-  <div class="input-group">
-    <label class="input-label">Lábak (legjobb X-ből)</label>
-    <select id="legsCount">
-      <option value="1">1 láb</option>
-      <option value="3" selected>Legjobb 2/3-ból</option>
-      <option value="5">Legjobb 3/5-ből</option>
-    </select>
-  </div>
-  <div class="input-group">
-    <label class="input-label">Kiszállás szabály</label>
-    <select id="outRule">
-      <option value="double">Double Out (hivatalos)</option>
-      <option value="straight">Straight Out (bármi)</option>
-    </select>
-  </div>
-  <div class="input-group">
-    <label class="input-label">Beviteli mód</label>
-    <select id="inputMode">
-      <option value="total">Összesített pont (egyszerű)</option>
-      <option value="dart">Nyílanként (Single/Double/Treble)</option>
-    </select>
+
+  <!-- Compact 2-column settings grid -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+    <div class="input-group" style="margin-bottom:0">
+      <label class="input-label">Játékmód</label>
+      <select id="gameMode"><option value="501">501</option><option value="301">301</option></select>
+    </div>
+    <div class="input-group" style="margin-bottom:0">
+      <label class="input-label">Lábak</label>
+      <select id="legsCount">
+        <option value="1">Best of 1</option>
+        <option value="3" selected>Best of 3</option>
+        <option value="5">Best of 5</option>
+        <option value="7">Best of 7</option>
+      </select>
+    </div>
+    <div class="input-group" style="margin-bottom:0">
+      <label class="input-label">Kiszállás</label>
+      <select id="outRule">
+        <option value="double">Double Out</option>
+        <option value="straight">Straight Out</option>
+      </select>
+    </div>
+    <div class="input-group" style="margin-bottom:0">
+      <label class="input-label">Bevitel</label>
+      <select id="inputMode">
+        <option value="total">Összesített</option>
+        <option value="dart">Nyílanként</option>
+      </select>
+    </div>
   </div>
   <div class="input-group">
     <label class="input-label">Meccs típusa</label>
@@ -345,7 +369,7 @@
   <div id="teamSetupWrap" style="display:none">
     <div class="notice" style="margin-bottom:8px">👥 Válassz 4 játékost — az első kettő az A csapat, a másik kettő a B csapat</div>
   </div>
-  <div class="notice orange">⚡ PubGame: 501-nél 60, 301-nél 42 nyíl után aktiválódik — 3 nyíl, legtöbb pont nyer!</div>
+  <div class="notice orange" style="font-size:12px;padding:6px 10px">⚡ PubGame: 501-nél 60, 301-nél 42 nyíl után — 3 nyíl, legtöbb pont nyer!</div>
   <div class="sep"></div>
   <div class="section-title">JÁTÉKOSOK <span>HOZZÁADÁSA</span></div>
   <div id="savedPlayersList" style="margin-bottom:9px"></div>
@@ -558,6 +582,21 @@
           <option value="3">Top 3</option>
         </select>
       </div>
+      <div class="input-group">
+        <label class="input-label">Kieséses párosítás</label>
+        <select id="koPairingMode">
+          <option value="auto">Automatikus (A1 vs B2, BYE a csoportelsőknek)</option>
+          <option value="manual">Manuális (szervező állítja be)</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label class="input-label">Kieséses meccs formátum</label>
+        <select id="koLegs">
+          <option value="1">Best of 1</option>
+          <option value="3" selected>Best of 3</option>
+          <option value="5">Best of 5</option>
+        </select>
+      </div>
     </div>
 
     <div class="input-group">
@@ -577,6 +616,13 @@
   <!-- BRACKET TAB -->
   <div id="tbracket" class="tab-content">
     <div id="bracketList"></div>
+    <div id="koPhaseWrap" style="display:none">
+      <div class="sep"></div>
+      <div class="section-title" style="font-size:20px">KIESÉSES <span>KÖR</span></div>
+      <div id="koPairingInfo" class="notice" style="margin-bottom:8px"></div>
+      <div id="koBracketList"></div>
+      <button class="btn btn-primary" id="generateKoBtn" style="display:none;margin-top:8px" onclick="generateKnockoutPhase()">🎲 KIESÉSES KÖR SORSOLÁSA</button>
+    </div>
     <div id="bracketActions" style="display:none;margin-top:11px">
       <button class="btn btn-danger" onclick="clearTournament()">TORNA TÖRLÉSE</button>
     </div>
@@ -1091,15 +1137,18 @@ function selectBullWinner(i){ bullState.selectedIdx=i; renderBullScreen(); }
 function confirmBullStart(){
   const args=bullState.pendingGameArgs;
   const players=args[0], mode=args[1], legs=args[2];
-  const tourneyIdx=args[3];
+  const tourneyIdx=args[3]; // rr match index
   const outRule=args[4]||'double';
   const inputModeVal=args[5]||'total';
   const matchType=args[6]||'singles';
+  const matchPhase=args[7]||'rr'; // 'rr' or 'ko'
+  const koIdx=args[8]; // ko match index
   const startIdx=bullState.selectedIdx;
   bullState=null;
   startGame(players,mode,legs,startIdx,outRule,matchType);
   dartMode = inputModeVal === 'dart';
-  if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
+  if(matchPhase==='ko' && koIdx!==undefined) game._koMatchIdx=koIdx;
+  else if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 function skipBull(){
   const args=bullState.pendingGameArgs;
@@ -1108,10 +1157,13 @@ function skipBull(){
   const outRule=args[4]||'double';
   const inputModeVal=args[5]||'total';
   const matchType=args[6]||'singles';
+  const matchPhase=args[7]||'rr';
+  const koIdx=args[8];
   bullState=null;
   startGame(players,mode,legs,Math.floor(Math.random()*players.length),outRule,matchType);
   dartMode = inputModeVal === 'dart';
-  if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
+  if(matchPhase==='ko' && koIdx!==undefined) game._koMatchIdx=koIdx;
+  else if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 
 // ===== GAME =====
@@ -1208,7 +1260,8 @@ function renderGame(){
         <div style="margin-top:4px">
           ${team.members.map((m,mi)=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;color:${mi===team.currentMember&&isActive?'var(--accent)':'var(--muted)'};font-weight:${mi===team.currentMember&&isActive?700:400}">${esc(m)}</span>`).join('<span style="color:var(--border)"> · </span>')}
         </div>
-        <div class="p-meta" style="margin-top:4px">${'●'.repeat(team.legsWon)}${'○'.repeat(Math.max(0,game.legs-team.legsWon))} (${team.legsWon}/${needed})</div>
+        <div class="p-meta" style="margin-top:3px">🎯 ${team.dartsThrown||0} nyíl</div>
+        <div class="p-meta" style="margin-top:2px">${'●'.repeat(team.legsWon)}${'○'.repeat(Math.max(0,game.legs-team.legsWon))} (${team.legsWon}/${needed})</div>
       </div>`;
     }).join('');
   } else {
@@ -1388,7 +1441,6 @@ function undoLastScore(){
   if(!game||game.undoStack.length===0) return;
   const snap=game.undoStack.pop();
   if(snap.teamsSnapshot){
-    // Team mode undo
     game.teams = snap.teamsSnapshot.map(t=>({...t}));
     game.currentTeam = snap.currentTeam;
   } else {
@@ -1400,7 +1452,10 @@ function undoLastScore(){
   game.legLog.splice(snap.legLogLength);
   game.roundNumber=snap.roundNumber;
   game.isPubGame=snap.isPubGame;
+  // Reset dart mode state too
   currentInput='';
+  dartThrows=[];
+  dartTurnScore=0;
   showToast('↩ Visszavonva');
   renderGame();
 }
@@ -1504,6 +1559,7 @@ function submitScoreTeam(score){
 
   const currentPlayerName = team.members[team.currentMember];
 
+  team.dartsThrown = (team.dartsThrown||0) + 3;
   if(remaining < 0 || remaining === 1){
     // BUST
     game.log.push({player:currentPlayerName, score, bust:true, remaining:team.score});
@@ -1521,7 +1577,7 @@ function submitScoreTeam(score){
       }
       showToast(`🎯 ${team.name} nyerte a lábat!`);
       // Reset leg
-      teams.forEach(t=>{ t.score=game.mode; t.currentMember=0; });
+      teams.forEach(t=>{ t.score=game.mode; t.currentMember=0; t.dartsThrown=0; });
       game.currentTeam = (game.currentTeam+1)%2;
       game.roundNumber++;
       currentInput=''; renderGame(); return;
@@ -1533,11 +1589,13 @@ function submitScoreTeam(score){
   game.currentTeam = (game.currentTeam+1) % 2;
   currentInput='';
 
-  // PubGame check
+  // PubGame check - count total darts thrown per team member
   if(!game.isPubGame){
-    const totalDartsA = teams[0].members.length * 3;
-    // Simple check: if round >= pubLimit/3
-    if(game.roundNumber * 3 >= game.pubLimit){
+    // Each round = 3 darts per player, 2 players per team
+    // pubLimit is per player, so check if any player exceeded it
+    const dartsPerRound = game.teams[0].members.length; // turns per team per round
+    const estimatedDartsPerPlayer = game.roundNumber * 3;
+    if(estimatedDartsPerPlayer >= game.pubLimit){
       triggerPubGameTeam(); return;
     }
   }
@@ -1569,15 +1627,15 @@ function endGameTeam(winTeam){
 
 function triggerPubGameTeam(){
   game.isPubGame = true;
-  // All players throw in pub game
-  const allPlayers = game.teams.flatMap(t=>t.members);
+  // All players from both teams throw
+  const allPlayers = game.teams.flatMap((t,ti)=>t.members.map(name=>({name, team:ti})));
   game.pubState = {
-    scores: allPlayers.map(name=>({name, score:null, team:game.teams.findIndex(t=>t.members.includes(name))})),
+    scores: allPlayers.map(p=>({name:p.name, score:null, team:p.team})),
     currentIdx: 0,
     isTeamPub: true
   };
   pubInput='';
-  showToast('🍺 PUB GAME INDUL!', 2500);
+  showToast('🍺 PUB GAME — mind a 4 játékos dob!', 2500);
   renderGame();
 }
 function resetLeg(){
@@ -1600,8 +1658,10 @@ function renderPubDisplay(){
   const el=document.getElementById('pubScoresDisplay');
   el.innerHTML=game.pubState.scores.map((s,i)=>{
     const isActive=i===game.pubState.currentIdx&&s.score===null;
-    return `<div class="pub-player-score ${isActive?'active-pub':''}">
-      <div class="pps-name">${esc(s.name)}</div>
+    const teamIdx = s.team !== undefined ? s.team : -1;
+    const teamLabel = teamIdx===0?'A':'teamIdx===1?'B':'')';
+    return `<div class="pub-player-score ${isActive?'active-pub':''}" style="${teamIdx===0?'border-color:rgba(255,59,59,.3)':teamIdx===1?'border-color:rgba(79,195,247,.3)':''}">
+      <div class="pps-name">${esc(s.name)}${teamIdx>=0?` <span style="font-size:9px;opacity:.6">${teamIdx===0?'A':'B'}</span>`:''}</div>
       <div class="pps-val ${s.score!==null?'done':''}">${s.score!==null?s.score:(isActive?(pubInput||'-'):'?')}</div>
     </div>`;
   }).join('');
@@ -1616,40 +1676,52 @@ function pubSubmit(){
   const ps=game.pubState;
   ps.scores[ps.currentIdx].score=score;
   game.log.push({player:ps.scores[ps.currentIdx].name,score,bust:false,remaining:0,pub:true});
-  playSoundQueue(numToFiles(score));
   pubInput=''; ps.currentIdx++;
+
   if(ps.currentIdx>=ps.scores.length){
     const sorted=[...ps.scores].sort((a,b)=>b.score-a.score);
     const topScore=sorted[0].score;
     const tied=sorted.filter(s=>s.score===topScore);
     if(tied.length>1){
       showToast(`🔄 Döntetlen! Újra dobnak: ${tied.map(s=>s.name).join(', ')}`,3000);
-      
-      game.pubState={scores:tied.map(s=>({name:s.name,score:null})),currentIdx:0};
+      game.pubState={scores:tied.map(s=>({name:s.name,score:null,team:s.team})),currentIdx:0,isTeamPub:ps.isTeamPub};
       pubInput=''; renderGame(); return;
     }
-    const winnerName=sorted[0].name;
-    const winPlayer=game.players.find(p=>p.name===winnerName);
-    if(winPlayer){
-      winPlayer.legsWon++;
-      game.log.push({player:winnerName,score:topScore,bust:false,remaining:0,pub:true,won:true});
-      saveLegToHistory(winnerName);
+
+    if(ps.isTeamPub && game.teams){
+      // Team pub: sum scores per team, higher total wins the leg
+      const teamScores=game.teams.map((t,ti)=>{
+        const total=ps.scores.filter(s=>s.team===ti).reduce((sum,s)=>sum+(s.score||0),0);
+        return {team:t,ti,total};
+      });
+      const winner=teamScores.sort((a,b)=>b.total-a.total)[0];
+      winner.team.legsWon++;
       const needed=Math.ceil(game.legs/2);
-      if(winPlayer.legsWon>=needed){ endGame(winPlayer,true); return; }
-      showToast(`🍺 ${winnerName} nyerte a lábat!`);
-      speak(`${winnerName} nyerte a lábat!`);
+      showToast(`🍺 ${winner.team.name} nyerte a lábat! (${winner.total} pont)`);
+      if(winner.team.legsWon>=needed){ endGameTeam(winner.team); return; }
       game.isPubGame=false; game.pubState=null;
-      resetLeg(); renderGame();
+      game.teams.forEach(t=>{ t.score=game.mode; t.currentMember=0; t.dartsThrown=0; });
+      game.currentTeam=0; game.roundNumber++;
+      renderGame();
+    } else {
+      // Singles pub
+      const winnerName=sorted[0].name;
+      const winPlayer=game.players.find(p=>p.name===winnerName);
+      if(winPlayer){
+        winPlayer.legsWon++;
+        saveLegToHistory(winnerName);
+        const needed=Math.ceil(game.legs/2);
+        if(winPlayer.legsWon>=needed){ endGame(winPlayer,true); return; }
+        showToast(`🍺 ${winnerName} nyerte a lábat!`);
+        game.isPubGame=false; game.pubState=null;
+        resetLeg(); renderGame();
+      }
     }
   } else {
-    // Announce next player
-    const next=game.pubState.scores[game.pubState.currentIdx];
-
     renderGame();
   }
 }
 
-// ===== END GAME =====
 function endGame(winner, isPub){
   const s=state.stats;
   if(!s[winner.name]) s[winner.name]={wins:0,games:0,totalDarts:0,totalPoints:0,pubWins:0};
@@ -1691,6 +1763,19 @@ function endGame(winner, isPub){
       m.status='done';
     }
   }
+  // Update KO match if applicable
+  if(game._koMatchIdx!==undefined && state.tournament&&state.tournament.koMatches){
+    const idx=game._koMatchIdx;
+    const m=state.tournament.koMatches[idx];
+    if(m){
+      const losePlayer=game.players.find(p=>p.name!==winner.name);
+      m.legsP1=m.p1===winner.name?winner.legsWon:(losePlayer?losePlayer.legsWon:0);
+      m.legsP2=m.p2===winner.name?winner.legsWon:(losePlayer?losePlayer.legsWon:0);
+      m.winner=winner.name;
+      m.loser=losePlayer?losePlayer.name:'';
+      m.status='done';
+    }
+  }
   saveState();
   playSoundQueue(['swinner']);
   const avg=calcAvg(winner.pointsScored,winner.dartsThrown);
@@ -1706,8 +1791,15 @@ function endGame(winner, isPub){
 }
 
 function startRematch(){
-  const pl=game.players.map(p=>p.name), m=game.mode, l=game.legs;
-  bullState={players:pl,selectedIdx:null,pendingGameArgs:[pl,m,l]};
+  const m=game.mode, l=game.legs, outRule=game.outRule||'double';
+  const matchType=game.matchType||'singles';
+  if(matchType==='teams' && game.teams){
+    const allPlayers=game.teams.flatMap(t=>t.members);
+    bullState={players:allPlayers, selectedIdx:null, pendingGameArgs:[allPlayers,m,l,undefined,outRule,'total',matchType]};
+  } else {
+    const pl=game.players.map(p=>p.name);
+    bullState={players:pl, selectedIdx:null, pendingGameArgs:[pl,m,l,undefined,outRule,'total',matchType]};
+  }
   renderBullScreen(); showScreen('screen-bull');
 }
 function confirmQuit(){ document.getElementById('quitModal').classList.add('show'); }
@@ -1982,23 +2074,26 @@ function onTourneyTypeChange(){
     groupWrap.style.display='none';
   }
 }
+
 function onGroupSettingChange(){
   const gc=parseInt(document.getElementById('groupCount').value);
   const pp=parseInt(document.getElementById('playersPerGroup').value);
   document.getElementById('groupCalcInfo').textContent=`ℹ️ ${gc} csoport × ${pp} fő = ${gc*pp} játékos szükséges`;
 }
+
 function renderTourneyScreen(){
   tourneyPlayers=[];
   renderTourneyPlayers();
   onTourneyTypeChange();
   const el=document.getElementById('savedForTourney');
   if(state.players.length){
-    el.innerHTML='<div class="input-label" style="margin-bottom:5px">MENTETT JÁTÉKOSOK</div>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">' +
-      state.players.map(p=>`<button class="quick-btn" style="flex:none;padding:5px 10px" onclick="addTourneyPlayerByName('${esc(p).replace(/'/g,"\\'")}')"> ${esc(p)}</button>`).join('')+'</div>';
+    el.innerHTML='<div class="input-label" style="margin-bottom:5px">MENTETT JÁTÉKOSOK</div>'+
+      '<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px">'+
+      state.players.map(p=>`<button class="quick-btn" style="flex:none;padding:5px 10px" onclick="addTourneyPlayerByName('${esc(p).replace(/'/g,"\'")}')"> ${esc(p)}</button>`).join('')+'</div>';
   } else el.innerHTML='';
   renderBracket();
 }
+
 function addTourneyPlayer(){
   const el=document.getElementById('tourneyPlayerName');
   const name=el.value.trim(); if(!name)return;
@@ -2021,18 +2116,22 @@ function renderTourneyPlayers(){
     </div>`).join('');
   ce.textContent=`${tourneyPlayers.length} játékos`;
 }
+
 function generateTourney(){
   if(tourneyPlayers.length<2){showToast('⚠️ Legalább 2 játékos!');return;}
   const type=document.getElementById('tourneyType').value;
   const mode=document.getElementById('tourneyMode').value;
   const shuffled=[...tourneyPlayers].sort(()=>Math.random()-.5);
-  let matches=[],groups=[],advancePerGroup=2;
+  let matches=[],groups=[],advancePerGroup=2,koPairingMode='auto',koLegs=3;
+
   if(type==='roundrobin'){
     matches=genRoundRobin(shuffled);
   } else if(type==='groups'){
     const gc=parseInt(document.getElementById('groupCount').value);
     const pp=parseInt(document.getElementById('playersPerGroup').value);
     advancePerGroup=parseInt(document.getElementById('advancePerGroup').value);
+    koPairingMode=document.getElementById('koPairingMode').value;
+    koLegs=parseInt(document.getElementById('koLegs').value);
     const needed=gc*pp;
     if(shuffled.length<needed){showToast(`⚠️ Kell ${needed} játékos (${shuffled.length} van)!`,3000);return;}
     const used=shuffled.slice(0,needed);
@@ -2043,9 +2142,21 @@ function generateTourney(){
   } else {
     matches=genKnockout(shuffled);
   }
-  state.tournament={type,mode,matches,groups,players:shuffled,advancePerGroup,createdAt:new Date().toLocaleDateString('hu-HU')};
-  saveState(); renderBracket(); switchTab('tbracket'); showToast('🎲 Sorsolás kész!');
+
+  state.tournament={
+    type, mode, matches, groups,
+    players:shuffled, advancePerGroup, koPairingMode, koLegs,
+    createdAt:new Date().toLocaleDateString('hu-HU'),
+    koMatches:[], // knockout phase matches
+    koGenerated:false,
+    groupsComplete:false,
+  };
+  saveState();
+  renderBracket();
+  switchTab('tbracket');
+  showToast('🎲 Sorsolás kész!');
 }
+
 function genRoundRobin(players){
   const m=[];
   for(let i=0;i<players.length;i++)
@@ -2053,6 +2164,7 @@ function genRoundRobin(players){
       m.push({p1:players[i],p2:players[j],status:'pending',winner:null,loser:null,legsP1:0,legsP2:0,phase:'rr'});
   return m;
 }
+
 function genKnockout(players){
   const m=[];
   for(let i=0;i<players.length-1;i+=2)
@@ -2063,10 +2175,243 @@ function genKnockout(players){
   }
   return m;
 }
+
 function splitGroups(players,numGroups,perGroup){
   const groups=Array.from({length:numGroups},()=>[]);
   players.forEach((p,i)=>groups[i%numGroups].push(p));
   return groups;
+}
+
+// ===== KNOCKOUT PHASE GENERATION =====
+function checkGroupsComplete(){
+  const t=state.tournament;
+  if(!t||t.type!=='groups'||!t.groups) return false;
+  const allDone = t.matches.filter(m=>m.phase==='rr').every(m=>m.status==='done'||m.p2==='BYE');
+  return allDone;
+}
+
+function getGroupStandings(){
+  const t=state.tournament;
+  const letters=['A','B','C','D','E','F','G','H'];
+  return t.groups.map((group,gi)=>{
+    const gm=t.matches.filter(m=>m.group===gi&&m.phase==='rr');
+    const rows=calcGroupStandings(group,gm);
+    return {groupName:letters[gi], standings:rows};
+  });
+}
+
+function generateKnockoutPhase(){
+  const t=state.tournament;
+  if(!t||t.type!=='groups') return;
+
+  const groupStandings=getGroupStandings();
+  const adv=t.advancePerGroup||2;
+  const koLegs=t.koLegs||3;
+  const pairingMode=t.koPairingMode||'auto';
+
+  // Get qualifiers per group: [{groupName, rank, player}]
+  const qualifiers=[];
+  groupStandings.forEach(({groupName,standings})=>{
+    standings.slice(0,adv).forEach((row,rank)=>{
+      qualifiers.push({groupName, rank:rank+1, player:row.name});
+    });
+  });
+
+  if(pairingMode==='manual'){
+    renderManualKoPairing(qualifiers, koLegs);
+    return;
+  }
+
+  // AUTO PAIRING: A1 vs B2, B1 vs A2, etc. + BYE for group winners if odd
+  const koMatches=generateAutoKoPairing(qualifiers, koLegs);
+  t.koMatches=koMatches;
+  t.koGenerated=true;
+  saveState();
+  renderBracket();
+  showToast('🎲 Kieséses kör sorsolva!');
+}
+
+function generateAutoKoPairing(qualifiers, koLegs){
+  // Sort by rank then group: rank1 first, within rank by group
+  const byRank={};
+  qualifiers.forEach(q=>{
+    if(!byRank[q.rank]) byRank[q.rank]=[];
+    byRank[q.rank].push(q);
+  });
+
+  const matches=[];
+  const numGroups=state.tournament.groups.length;
+  const adv=state.tournament.advancePerGroup;
+
+  // Group winners (rank 1) get BYE if we have odd qualifiers
+  const rank1=byRank[1]||[];
+  const rank2=byRank[2]||[];
+  const rank3=byRank[3]||[];
+
+  // Pair rank2 vs rank3 from opposite groups first
+  // Then rank1 vs winners of those matches (or BYE)
+  const allQualifiers=[...rank1,...rank2,...rank3];
+  const total=allQualifiers.length;
+
+  if(adv===1){
+    // Only group winners, just pair them
+    for(let i=0;i<rank1.length-1;i+=2){
+      matches.push(createKoMatch(rank1[i].player,rank1[i+1].player,`${rank1[i].groupName}1 vs ${rank1[i+1].groupName}1`,koLegs,1));
+    }
+  } else if(adv===2 && numGroups>=2){
+    // Classic: A1 vs B2, B1 vs A2 (cross-group)
+    const groups=state.tournament.groups.map((_,gi)=>({
+      r1:(byRank[1]||[]).find(q=>q.groupName===(['A','B','C','D'][gi]))||null,
+      r2:(byRank[2]||[]).find(q=>q.groupName===(['A','B','C','D'][gi]))||null,
+    }));
+    // Pair: Group[0].R1 gets BYE or plays Group[1].R2 winner
+    // Simple: A1 vs B2, B1 vs A2
+    if(numGroups===2){
+      const a1=rank1.find(q=>q.groupName==='A');
+      const a2=rank2.find(q=>q.groupName==='A');
+      const b1=rank1.find(q=>q.groupName==='B');
+      const b2=rank2.find(q=>q.groupName==='B');
+      if(a1&&b2) matches.push(createKoMatch(a1.player,b2.player,`A1 vs B2`,koLegs,1));
+      if(b1&&a2) matches.push(createKoMatch(b1.player,a2.player,`B1 vs A2`,koLegs,1));
+    } else {
+      // Cross-pair all: r1 of one group vs r2 of another
+      for(let i=0;i<rank1.length;i++){
+        const opponent=rank2[(i+1)%rank2.length];
+        matches.push(createKoMatch(rank1[i].player,opponent.player,
+          `${rank1[i].groupName}1 vs ${opponent.groupName}2`,koLegs,1));
+      }
+    }
+  } else if(adv===3 && numGroups>=2){
+    // Top 3 advance: rank1 gets BYE, rank2 vs rank3 from opposite groups
+    // BYE matches for rank1
+    rank1.forEach(q=>{
+      matches.push({p1:q.player,p2:'BYE',status:'done',winner:q.player,loser:'BYE',
+        legsP1:koLegs,legsP2:0,phase:'ko',round:1,label:`${q.groupName}1 - BYE`,koLegs});
+    });
+    // rank2 vs rank3 cross-group
+    for(let i=0;i<rank2.length;i++){
+      const r3=rank3[(i+1)%rank3.length]||rank3[i];
+      if(r3) matches.push(createKoMatch(rank2[i].player,r3.player,
+        `${rank2[i].groupName}2 vs ${r3.groupName}3`,koLegs,1));
+    }
+  }
+
+  return matches;
+}
+
+function createKoMatch(p1,p2,label,koLegs,round){
+  return {p1,p2,status:'pending',winner:null,loser:null,legsP1:0,legsP2:0,
+    phase:'ko',round,label,koLegs};
+}
+
+function renderManualKoPairing(qualifiers, koLegs){
+  const el=document.getElementById('koBracketList');
+  const wrap=document.getElementById('koPhaseWrap');
+  wrap.style.display='block';
+  document.getElementById('koPairingInfo').textContent=`📋 Állítsd be a párosításokat manuálisan (${qualifiers.length} továbbjutó)`;
+
+  const numMatches=Math.floor(qualifiers.length/2);
+  const hasBye=qualifiers.length%2!==0;
+
+  let html='<div class="manual-pair-grid">';
+  for(let i=0;i<numMatches;i++){
+    html+=`<div class="pair-slot">
+      <div class="pair-slot-label">${i+1}. MÉRKŐZÉS</div>
+      <div class="pair-selects">
+        <select id="koP1_${i}" style="flex:1;font-size:13px;padding:7px">
+          <option value="">Játékos 1...</option>
+          ${qualifiers.map(q=>`<option value="${esc(q.player)}">${esc(q.player)} (${q.groupName}${q.rank})</option>`).join('')}
+        </select>
+        <span class="pair-vs-label">VS</span>
+        <select id="koP2_${i}" style="flex:1;font-size:13px;padding:7px">
+          <option value="">Játékos 2...</option>
+          ${qualifiers.map(q=>`<option value="${esc(q.player)}">${esc(q.player)} (${q.groupName}${q.rank})</option>`).join('')}
+        </select>
+      </div>
+    </div>`;
+  }
+  html+='</div>';
+  html+=`<button class="btn btn-primary" onclick="saveManualKoPairing(${numMatches},${koLegs},${hasBye})">✓ PÁROSÍTÁS MENTÉSE</button>`;
+
+  if(hasBye){
+    html+=`<div class="notice" style="margin-top:8px">⚠️ Páratlan szám → 1 játékos automatikusan BYE-t kap</div>`;
+  }
+  el.innerHTML=html;
+}
+
+function saveManualKoPairing(numMatches, koLegs, hasBye){
+  const matches=[];
+  const used=new Set();
+  for(let i=0;i<numMatches;i++){
+    const p1=document.getElementById(`koP1_${i}`)?.value;
+    const p2=document.getElementById(`koP2_${i}`)?.value;
+    if(!p1||!p2){showToast('⚠️ Töltsd ki az összes mezőt!');return;}
+    if(p1===p2){showToast('⚠️ Nem játszhat valaki saját magával!');return;}
+    if(used.has(p1)||used.has(p2)){showToast(`⚠️ ${used.has(p1)?p1:p2} már szerepel!`);return;}
+    used.add(p1); used.add(p2);
+    matches.push(createKoMatch(p1,p2,`${esc(p1)} vs ${esc(p2)}`,koLegs,1));
+  }
+
+  // Add BYE for remaining player
+  if(hasBye){
+    const t=state.tournament;
+    const adv=t.advancePerGroup||2;
+    const groupStandings=getGroupStandings();
+    const allQualifiers=groupStandings.flatMap(g=>g.standings.slice(0,adv).map(s=>s.name));
+    const remaining=allQualifiers.find(p=>!used.has(p));
+    if(remaining){
+      matches.push({p1:remaining,p2:'BYE',status:'done',winner:remaining,loser:'BYE',
+        legsP1:koLegs,legsP2:0,phase:'ko',round:1,label:`${remaining} - BYE`,koLegs});
+    }
+  }
+
+  state.tournament.koMatches=matches;
+  state.tournament.koGenerated=true;
+  saveState();
+  renderBracket();
+  showToast('✅ Kieséses kör beállítva!');
+}
+
+// Check if KO round is done and generate next round
+function checkAndGenerateNextKoRound(){
+  const t=state.tournament;
+  if(!t||!t.koMatches) return;
+
+  const currentRound=Math.max(...t.koMatches.map(m=>m.round||1));
+  const currentRoundMatches=t.koMatches.filter(m=>m.round===currentRound);
+  const allDone=currentRoundMatches.every(m=>m.status==='done');
+
+  if(!allDone) return;
+
+  const winners=currentRoundMatches.map(m=>m.winner).filter(w=>w&&w!=='BYE');
+  if(winners.length<=1){
+    // Tournament over
+    if(winners.length===1) showToast(`🏆 ${winners[0]} nyerte a tornát!`, 4000);
+    return;
+  }
+
+  // Generate next round
+  const nextMatches=[];
+  for(let i=0;i<winners.length-1;i+=2){
+    nextMatches.push(createKoMatch(winners[i],winners[i+1],
+      `${esc(winners[i])} vs ${esc(winners[i+1])}`,t.koLegs||3,currentRound+1));
+  }
+  if(winners.length%2!==0){
+    const bye=winners[winners.length-1];
+    nextMatches.push({p1:bye,p2:'BYE',status:'done',winner:bye,loser:'BYE',
+      legsP1:3,legsP2:0,phase:'ko',round:currentRound+1,label:`${bye} - BYE`});
+  }
+
+  t.koMatches.push(...nextMatches);
+  saveState();
+  showToast(`🎯 ${getRoundName(currentRound+1, winners.length)} kezdődik!`, 2500);
+}
+
+function getRoundName(round, numPlayers){
+  if(numPlayers<=2) return 'DÖNTŐ';
+  if(numPlayers<=4) return 'ELŐDÖNTŐ';
+  if(numPlayers<=8) return 'NEGYEDDÖNTŐ';
+  return `${round}. KÖR`;
 }
 
 // ===== STANDINGS (PDC rules) =====
@@ -2103,23 +2448,103 @@ function headToHead(nameA,nameB,matches){
 function renderBracket(){
   const el=document.getElementById('bracketList');
   const actEl=document.getElementById('bracketActions');
+  const koWrap=document.getElementById('koPhaseWrap');
   if(!state.tournament){
     el.innerHTML='<div class="empty-state"><div class="es-icon">🎲</div><div class="es-text">Még nincs torna sorsolva</div></div>';
-    actEl.style.display='none'; return;
+    if(actEl) actEl.style.display='none';
+    if(koWrap) koWrap.style.display='none';
+    return;
   }
-  actEl.style.display='block';
+  if(actEl) actEl.style.display='block';
   const t=state.tournament;
   let html=`<div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:9px">${t.createdAt} · ${t.mode}</div>`;
+
   if(t.type==='groups'&&t.groups&&t.groups.length){
     const letters=['A','B','C','D','E','F','G','H'];
     t.groups.forEach((group,gi)=>{
       html+=`<div class="group-header">📋 ${letters[gi]} CSOPORT</div>`;
       t.matches.filter(m=>m.group===gi).forEach(m=>{ html+=renderMatchCard(m,t.matches.indexOf(m)); });
     });
+    // Check if group phase is done
+    const groupsDone=checkGroupsComplete();
+    if(koWrap){
+      koWrap.style.display='block';
+      const genBtn=document.getElementById('generateKoBtn');
+      const pairingInfo=document.getElementById('koPairingInfo');
+      if(t.koGenerated){
+        // Show KO bracket
+        if(genBtn) genBtn.style.display='none';
+        renderKoBracket();
+      } else if(groupsDone){
+        if(genBtn) genBtn.style.display='block';
+        if(pairingInfo) pairingInfo.textContent='✅ Csoportkör kész! Sorsolás a kieséses körre:';
+        document.getElementById('koBracketList').innerHTML='';
+      } else {
+        if(genBtn) genBtn.style.display='none';
+        const done=t.matches.filter(m=>m.phase==='rr'&&m.status==='done').length;
+        const total=t.matches.filter(m=>m.phase==='rr').length;
+        if(pairingInfo) pairingInfo.textContent=`⏳ Csoportkör folyamatban: ${done}/${total} meccs kész`;
+        document.getElementById('koBracketList').innerHTML='';
+      }
+    }
   } else {
+    if(koWrap) koWrap.style.display='none';
     t.matches.forEach((m,i)=>{ html+=renderMatchCard(m,i); });
   }
   el.innerHTML=html;
+}
+
+function renderKoBracket(){
+  const t=state.tournament;
+  if(!t.koMatches||!t.koMatches.length) return;
+  const el=document.getElementById('koBracketList');
+
+  // Group by round
+  const rounds={};
+  t.koMatches.forEach(m=>{ const r=m.round||1; if(!rounds[r]) rounds[r]=[]; rounds[r].push(m); });
+
+  const numRounds=Math.max(...Object.keys(rounds).map(Number));
+  let html='';
+  Object.keys(rounds).sort((a,b)=>Number(a)-Number(b)).forEach(round=>{
+    const r=Number(round);
+    const matches=rounds[round];
+    const winnerCount=matches.filter(m=>m.winner&&m.winner!=='BYE').length + matches.filter(m=>m.p2==='BYE').length;
+    html+=`<div class="ko-round-title">${getRoundName(r, matches.length*2)}</div>`;
+    matches.forEach((m,i)=>{
+      const koIdx=t.koMatches.indexOf(m);
+      if(m.p2==='BYE'){
+        html+=`<div class="ko-match bye-match">
+          <div class="ko-players"><span class="ko-player">${esc(m.p1)}<span class="ko-seed">BYE — automatikusan továbbjut</span></span></div>
+          <div class="ko-status-bye">⏭️ TOVÁBBJUT</div>
+        </div>`;
+      } else if(m.status==='done'){
+        html+=`<div class="ko-match">
+          <div class="ko-players">
+            <span class="ko-player" style="${m.winner===m.p1?'color:var(--green);font-weight:700':''">${esc(m.p1)}</span>
+            <span class="ko-vs">VS</span>
+            <span class="ko-player" style="${m.winner===m.p2?'color:var(--green);font-weight:700':''">${esc(m.p2)}</span>
+          </div>
+          <div class="ko-status-done">✓ ${esc(m.winner)} nyert (${m.legsP1}:${m.legsP2})</div>
+        </div>`;
+      } else {
+        html+=`<div class="ko-match">
+          <div class="ko-players">
+            <span class="ko-player">${esc(m.p1)}</span>
+            <span class="ko-vs">VS</span>
+            <span class="ko-player">${esc(m.p2)}</span>
+          </div>
+          <div class="ko-actions">
+            <button class="btn btn-primary btn-xs" onclick="startKoMatch(${koIdx})">MECCS</button>
+            <button class="btn btn-ghost btn-xs" onclick="openKoResultModal(${koIdx})">EREDMÉNY</button>
+          </div>
+        </div>`;
+      }
+    });
+  });
+
+  el.innerHTML=html;
+  // Check if current round done, offer next
+  checkAndGenerateNextKoRound();
 }
 function renderMatchCard(m,idx){
   const done=m.status==='done';
@@ -2139,7 +2564,46 @@ function renderMatchCard(m,idx){
   </div>`;
 }
 
+function startKoMatch(koIdx){
+  const t=state.tournament;
+  const m=t.koMatches[koIdx];
+  const legs=m.koLegs||t.koLegs||3;
+  bullState={players:[m.p1,m.p2],selectedIdx:null,
+    pendingGameArgs:[[m.p1,m.p2],parseInt(t.mode),legs,undefined,'double','total','singles','ko',koIdx]};
+  renderBullScreen(); showScreen('screen-bull');
+}
+
+function openKoResultModal(koIdx){
+  pendingResultIdx=null;
+  pendingKoIdx=koIdx;
+  const t=state.tournament;
+  const m=t.koMatches[koIdx];
+  let modal=document.getElementById('resultModal');
+  if(!modal){
+    const div=document.createElement('div');
+    div.id='resultModal'; div.className='modal-overlay';
+    div.innerHTML=`<div class="modal-box">
+      <div class="modal-title">EREDMÉNY</div>
+      <div style="color:var(--muted);font-size:13px;margin-bottom:11px" id="resultModalSub"></div>
+      <div class="input-group"><label class="input-label" id="resultLabelP1"></label><input type="number" id="resultLegsP1" min="0" max="10" placeholder="0"></div>
+      <div class="input-group"><label class="input-label" id="resultLabelP2"></label><input type="number" id="resultLegsP2" min="0" max="10" placeholder="0"></div>
+      <div class="modal-actions">
+        <button class="btn btn-primary btn-sm" onclick="saveResult()">MENTÉS</button>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal('resultModal')">MÉGSEM</button>
+      </div>
+    </div>`;
+    document.body.appendChild(div);
+  }
+  document.getElementById('resultModalSub').textContent=`${m.p1} vs ${m.p2}`;
+  document.getElementById('resultLabelP1').textContent=`${m.p1} nyert lábak`;
+  document.getElementById('resultLabelP2').textContent=`${m.p2} nyert lábak`;
+  document.getElementById('resultLegsP1').value='';
+  document.getElementById('resultLegsP2').value='';
+  document.getElementById('resultModal').classList.add('show');
+}
+
 let pendingResultIdx=null;
+let pendingKoIdx=null;
 function openResultModal(idx){
   pendingResultIdx=idx;
   const m=state.tournament.matches[idx];
@@ -2170,13 +2634,24 @@ function saveResult(){
   const l1=parseInt(document.getElementById('resultLegsP1').value)||0;
   const l2=parseInt(document.getElementById('resultLegsP2').value)||0;
   if(l1===l2){showToast('⚠️ Döntetlen nem lehetséges!');return;}
-  const m=state.tournament.matches[pendingResultIdx];
-  m.legsP1=l1; m.legsP2=l2;
-  m.winner=l1>l2?m.p1:m.p2;
-  m.loser=l1>l2?m.p2:m.p1;
-  m.status='done';
+
+  if(pendingKoIdx!==null && state.tournament.koMatches){
+    const m=state.tournament.koMatches[pendingKoIdx];
+    m.legsP1=l1; m.legsP2=l2;
+    m.winner=l1>l2?m.p1:m.p2;
+    m.loser=l1>l2?m.p2:m.p1;
+    m.status='done';
+    pendingKoIdx=null;
+  } else if(pendingResultIdx!==null){
+    const m=state.tournament.matches[pendingResultIdx];
+    m.legsP1=l1; m.legsP2=l2;
+    m.winner=l1>l2?m.p1:m.p2;
+    m.loser=l1>l2?m.p2:m.p1;
+    m.status='done';
+    pendingResultIdx=null;
+  }
   saveState(); closeModal('resultModal'); renderBracket();
-  showToast(`✅ ${m.winner} nyert!`);
+  showToast(`✅ Eredmény mentve!`);
 }
 function startTourneyMatch(i){
   const m=state.tournament.matches[i];
