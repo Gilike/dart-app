@@ -380,7 +380,10 @@
   <div class="game-top">
     <button class="back-btn" style="margin-bottom:0" onclick="confirmQuit()">← KILÉP</button>
     <span id="gameBadge" class="game-mode-badge">501</span>
-    <div id="gameInfo" class="game-info-badge"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+      <div id="gameInfo" class="game-info-badge"></div>
+      <button onclick="toggleInputMode()" id="inputModeBtn" style="background:var(--surface2);border:1px solid var(--border);border-radius:5px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1px;padding:2px 7px;cursor:pointer;text-transform:uppercase">📊 ÖSSZEG</button>
+    </div>
   </div>
   <div class="voice-toggle">
     <span class="vt-label">🔊 Hang bejelentő</span>
@@ -919,6 +922,15 @@ function numHU(n){
   return ones[h]+'száz'+(r>0?numHU(r):'');
 }
 
+function toggleInputMode(){
+  dartMode = !dartMode;
+  const btn = document.getElementById('inputModeBtn');
+  if(btn) btn.textContent = dartMode ? '🎯 NYÍLANKÉNT' : '📊 ÖSSZEG';
+  if(dartMode){ dartThrows=[]; dartTurnScore=0; }
+  else { currentInput=''; }
+  renderGame();
+}
+
 function announceScore(score, remaining, bust){
   if(!voiceEnabled) return;
   if(bust){
@@ -1139,6 +1151,7 @@ function startGame(players, mode, legs, startPlayerIdx=0, outRule='double', matc
   currentInput=''; pubInput='';
   dartMode = false; dartThrows = []; dartTurnScore = 0;
   game.currentTeam = 0; // for team mode
+  game.comingBack = {}; // tracks who was ever behind: {playerName: true}
   renderGame();
   showScreen('screen-game');
   playSoundQueue(['gameon']);
@@ -1148,6 +1161,8 @@ function calcAvg(pts,darts){ return darts>0?((pts/darts)*3).toFixed(1):'-'; }
 
 function renderGame(){
   document.getElementById('gameBadge').textContent=game.mode;
+  const imBtn=document.getElementById('inputModeBtn');
+  if(imBtn) imBtn.textContent=dartMode?'🎯 NYÍLANKÉNT':'📊 ÖSSZEG';
   const needed=Math.ceil(game.legs/2);
   const outTag = game.outRule==='double'?'DO':'SO';
   let infoLine = '';
@@ -1179,19 +1194,39 @@ function renderGame(){
 
   const count=game.players.length;
   const grid=document.getElementById('playersGrid');
-  grid.className=count===1?'players-grid cols1':count===3?'players-grid cols3':'players-grid';
-  grid.innerHTML=game.players.map((p,i)=>{
-    const isActive=i===game.currentPlayer&&!game.isPubGame;
-    const won=p.legsWon>=needed;
-    return `<div class="player-card ${isActive?'active':''} ${won?'won':''}">
-      ${isActive?'<div class="active-dot"></div>':''}
-      <div class="p-name">${esc(p.name)}</div>
-      <div class="p-score">${p.score}</div>
-      <div class="p-meta">🎯 ${p.legDartsThrown} nyíl</div>
-      <div class="p-meta">${'●'.repeat(p.legsWon)}${'○'.repeat(Math.max(0,game.legs-p.legsWon))} (${p.legsWon}/${needed})</div>
-      <div class="p-meta">Ø ${calcAvg(p.pointsScored,p.dartsThrown)}</div>
-    </div>`;
-  }).join('');
+
+  if(game.matchType==='teams' && game.teams){
+    // TEAM MODE: 2 cards only, shared score per team
+    grid.className='players-grid';
+    grid.innerHTML=game.teams.map((team,ti)=>{
+      const isActive=!game.isPubGame && game.currentTeam===ti;
+      const won=team.legsWon>=needed;
+      return `<div class="player-card ${isActive?'active':''} ${won?'won':''}" style="padding:12px">
+        ${isActive?'<div class="active-dot"></div>':''}
+        <div class="p-name"><span class="team-badge ${ti===0?'team-a':'team-b'}">${esc(team.name)}</span></div>
+        <div class="p-score">${team.score}</div>
+        <div style="margin-top:4px">
+          ${team.members.map((m,mi)=>`<span style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:1px;color:${mi===team.currentMember&&isActive?'var(--accent)':'var(--muted)'};font-weight:${mi===team.currentMember&&isActive?700:400}">${esc(m)}</span>`).join('<span style="color:var(--border)"> · </span>')}
+        </div>
+        <div class="p-meta" style="margin-top:4px">${'●'.repeat(team.legsWon)}${'○'.repeat(Math.max(0,game.legs-team.legsWon))} (${team.legsWon}/${needed})</div>
+      </div>`;
+    }).join('');
+  } else {
+    // SINGLES MODE: individual player cards
+    grid.className=count===1?'players-grid cols1':count===3?'players-grid cols3':'players-grid';
+    grid.innerHTML=game.players.map((p,i)=>{
+      const isActive=i===game.currentPlayer&&!game.isPubGame;
+      const won=p.legsWon>=needed;
+      return `<div class="player-card ${isActive?'active':''} ${won?'won':''}">
+        ${isActive?'<div class="active-dot"></div>':''}
+        <div class="p-name">${esc(p.name)}</div>
+        <div class="p-score">${p.score}</div>
+        <div class="p-meta">🎯 ${p.legDartsThrown} nyíl</div>
+        <div class="p-meta">${'●'.repeat(p.legsWon)}${'○'.repeat(Math.max(0,game.legs-p.legsWon))} (${p.legsWon}/${needed})</div>
+        <div class="p-meta">Ø ${calcAvg(p.pointsScored,p.dartsThrown)}</div>
+      </div>`;
+    }).join('');
+  }
 
   if(game.isPubGame) renderPubDisplay();
   renderRoundLog();
@@ -1202,8 +1237,10 @@ function renderGame(){
 function renderCheckoutHint(){
   const el=document.getElementById('checkoutHint');
   if(!el||game.isPubGame){if(el)el.style.display='none';return;}
-  const player=game.players[game.currentPlayer];
-  const rem=player.score;
+  // Get current score - team or individual
+  const rem = (game.matchType==='teams'&&game.teams)
+    ? game.teams[game.currentTeam].score
+    : game.players[game.currentPlayer].score;
   const isDoubleOut = game.outRule === 'double';
   if(rem<=170 && rem>=2 && CHECKOUT[rem]){
     el.style.display='block';
@@ -1221,14 +1258,16 @@ function renderInputDisplay(){
   if(game.isPubGame) return;
   const val=document.getElementById('cinValue');
   const res=document.getElementById('cinResult');
-  const player=game.players[game.currentPlayer];
+  const currentScore = (game.matchType==='teams'&&game.teams)
+    ? game.teams[game.currentTeam].score
+    : game.players[game.currentPlayer].score;
   val.textContent=currentInput||'-';
   if(currentInput){
     const score=parseInt(currentInput);
     const err=getScoreError(score);
     if(err){ res.textContent=err; res.className='cin-result invalid'; }
     else {
-      const rem=player.score-score;
+      const rem=currentScore-score;
       const dblOut = game.outRule==='double';
       if(rem<0||rem===1){ res.textContent='BUST! 💥'; res.className='cin-result bust'; }
       else if(rem===0){
@@ -1280,9 +1319,12 @@ function renderCheckoutHintLive(){
 function submitScore(){
   if(!currentInput) return;
   const score=parseInt(currentInput);
-  // 0 is valid (no score)
   const err=getScoreError(score);
   if(err){ showToast(err); currentInput=''; renderInputDisplay(); return; }
+  currentInput=''; renderInputDisplay(); // Clear immediately
+
+  // Route to team mode
+  if(game.matchType==='teams' && game.teams){ submitScoreTeam(score); return; }
 
   const player=game.players[game.currentPlayer];
   const remaining=player.score-score;
@@ -1366,6 +1408,16 @@ function undoLastScore(){
 // ===== LEG HISTORY =====
 function saveLegToHistory(winnerName){
   // Calculate leg stats
+  // Track comeback - if anyone else had more legs, winner was behind
+  const winnerPlayer = game.players.find(p=>p.name===winnerName);
+  if(winnerPlayer){
+    game.players.forEach(p=>{
+      if(p.name!==winnerName && p.legsWon > winnerPlayer.legsWon-1){
+        if(!game.comingBack) game.comingBack={};
+        game.comingBack[winnerName]=true;
+      }
+    });
+  }
   const winnerTurns = game.legLog.filter(t=>t.player===winnerName&&!t.bust);
   const winnerDarts = game.players.find(p=>p.name===winnerName)?.legDartsThrown || 0;
   const winnerPoints = game.mode - (game.players.find(p=>p.name===winnerName)?.score||0);
@@ -1617,7 +1669,8 @@ function endGame(winner, isPub){
       const winAvg = calcAvg(winner.pointsScored, winner.dartsThrown);
       const loseAvg = calcAvg(loser.pointsScored, loser.dartsThrown);
       // Comeback: winner was behind in legs at some point
-      const wasComeback = winner.legsWon > 0 && loser.legsWon >= winner.legsWon;
+      // Comeback: winner was ever behind in legs during this match
+      const wasComeback = !!(game.comingBack && game.comingBack[winner.name]);
       updateH2HStats(winner.name, loser.name, winAvg, loseAvg, wasComeback, game);
     }
   }
