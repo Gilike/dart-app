@@ -625,12 +625,11 @@ function getScoreError(s){
 
 // ===== VOICE =====
 const SOUNDS_BASE = 'https://gilike.github.io/dart-app/';
-const audioCache = {};
-let currentAudio = null;
-let soundQueue = [];
+const audioBufferCache = {};
+let audioCtx = null;
+let currentSource = null;
 let isPlayingQueue = false;
 
-// Preload all sounds on startup
 const ALL_SOUNDS = [
   'bust','scheckout','gameon','swinner','legwon','pubgame','s180',
   'noscore','score','require',
@@ -639,46 +638,106 @@ const ALL_SOUNDS = [
   'n30','n40','n50','n60','n70','n80','n90','n100','n100and'
 ];
 
-function preloadSounds(){
-  ALL_SOUNDS.forEach(name => {
-    const audio = new Audio(SOUNDS_BASE + name + '.mp3');
-    audio.preload = 'auto';
-    audio.load();
-    audioCache[name] = audio;
-  });
+function getAudioCtx(){
+  if(!audioCtx || audioCtx.state === 'closed'){
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if(audioCtx.state === 'suspended') audioCtx.resume();
+  return audioCtx;
 }
 
-function playSound(file){
-  return new Promise((resolve) => {
-    if(!file){ resolve(); return; }
-    // Use cached audio, clone it so it can overlap/restart
-    const src = SOUNDS_BASE + file + '.mp3';
-    const audio = new Audio(src);
-    currentAudio = audio;
-    audio.onended = resolve;
-    audio.onerror = resolve;
-    audio.play().catch(resolve);
-  });
+// Unlock on first touch
+document.addEventListener('touchstart', ()=>{ try{ getAudioCtx(); }catch(e){} }, {once:true});
+
+async function fetchAndDecode(name){
+  if(audioBufferCache[name]) return audioBufferCache[name];
+  // Mark as loading to prevent duplicate fetches
+  if(audioBufferCache[name] === 'loading') return null;
+  audioBufferCache[name] = 'loading';
+  try {
+    const resp = await fetch(SOUNDS_BASE + name + '.mp3');
+    if(!resp.ok){ audioBufferCache[name] = null; return null; }
+    const ab = await resp.arrayBuffer();
+    const ctx = getAudioCtx();
+    const buf = await ctx.decodeAudioData(ab.slice(0));
+    audioBufferCache[name] = buf;
+    return buf;
+  } catch(e){ audioBufferCache[name] = null; return null; }
+}
+
+function preloadSounds(){
+  // Load sounds lazily with low priority - don't block UI
+  let i = 0;
+  function loadNext(){
+    if(i >= ALL_SOUNDS.length) return;
+    fetchAndDecode(ALL_SOUNDS[i++]);
+    setTimeout(loadNext, 200); // one per 200ms to avoid blocking
+  }
+  setTimeout(loadNext, 2000); // start after 2s so app loads first
 }
 
 function stopAllSounds(){
-  if(currentAudio){
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
-    currentAudio = null;
+  if(currentSource){
+    try{ currentSource.stop(); }catch(e){}
+    currentSource = null;
   }
-  soundQueue = [];
   isPlayingQueue = false;
 }
 
+async function playBuffered(name){
+  const buf = await fetchAndDecode(name);
+  if(!buf) return;
+  const ctx = getAudioCtx();
+  return new Promise((resolve) => {
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    currentSource = src;
+    src.onended = resolve;
+    src.start(0);
+  });
+}
+
+// Concatenate multiple audio buffers and play as one — zero gap!
 async function playSoundQueue(files){
   if(!voiceEnabled) return;
-  // Stop any currently playing sounds
   stopAllSounds();
   isPlayingQueue = true;
-  for(const f of files){
-    if(!isPlayingQueue) break; // cancelled
-    if(f) await playSound(f);
+  const validFiles = files.filter(Boolean);
+  if(validFiles.length === 0) return;
+
+  // Load all buffers
+  const buffers = await Promise.all(validFiles.map(f => fetchAndDecode(f)));
+  const validBuffers = buffers.filter(b => b && b !== 'loading');
+  if(validBuffers.length === 0) return;
+  if(!isPlayingQueue) return;
+
+  const ctx = getAudioCtx();
+
+  if(validBuffers.length === 1){
+    // Single buffer - play directly
+    const src = ctx.createBufferSource();
+    src.buffer = validBuffers[0];
+    src.connect(ctx.destination);
+    currentSource = src;
+    await new Promise(r => { src.onended = r; src.start(0); });
+  } else {
+    // Merge all buffers into one - zero gap between words
+    const totalLength = validBuffers.reduce((sum, b) => sum + b.length, 0);
+    const merged = ctx.createBuffer(1, totalLength, ctx.sampleRate);
+    const out = merged.getChannelData(0);
+    let offset = 0;
+    for(const buf of validBuffers){
+      // Resample if needed (different sample rates)
+      const data = buf.getChannelData(0);
+      out.set(data, offset);
+      offset += buf.length;
+    }
+    const src = ctx.createBufferSource();
+    src.buffer = merged;
+    src.connect(ctx.destination);
+    currentSource = src;
+    await new Promise(r => { src.onended = r; src.start(0); });
   }
   isPlayingQueue = false;
 }
@@ -688,10 +747,7 @@ function numToFiles(n){
   if(n === 0) return ['noscore'];
   const files = [];
   if(n >= 100){
-    if(n % 100 === 0){
-      files.push('n100');
-      return files;
-    }
+    if(n % 100 === 0){ files.push('n100'); return files; }
     files.push('n100and');
     n = n % 100;
   }
@@ -700,9 +756,7 @@ function numToFiles(n){
     files.push('n'+t);
     n = n % 10;
   }
-  if(n > 0){
-    files.push('n'+n);
-  }
+  if(n > 0) files.push('n'+n);
   return files;
 }
 
@@ -1047,7 +1101,7 @@ function submitScore(){
     player.pointsScored+=score;
     game.log.push({player:player.name,score,bust:false,remaining});
     game.legLog.push({player:player.name,score,bust:false,remaining});
-    announceScore(score, remaining, false);
+    setTimeout(()=>announceScore(score, remaining, false), 0);
     if(remaining===0){
       const needed=Math.ceil(game.legs/2);
       player.legsWon++;
