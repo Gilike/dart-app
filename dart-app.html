@@ -196,6 +196,19 @@
   .notice{background:rgba(79,195,247,.07);border:1px solid rgba(79,195,247,.22);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--blue);margin-bottom:9px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px}
   .notice.orange{background:rgba(255,140,0,.07);border-color:rgba(255,140,0,.22);color:var(--accent2)}
 
+  /* DART BY DART NUMPAD */
+  .dart-tabs{display:flex;gap:4px;margin-bottom:8px}
+  .dart-tab{flex:1;padding:7px 4px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;text-align:center;line-height:1.2}
+  .dart-tab small{font-size:10px;opacity:.7}
+  .dart-tab.active{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-color:transparent}
+  .dart-tab:active{transform:scale(.94)}
+  .dart-numgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+  .dart-num{background:var(--surface2);border:1px solid var(--border);border-radius:7px;color:var(--text);font-family:'Bebas Neue',cursive;font-size:20px;padding:10px 4px;cursor:pointer;transition:all .12s;text-align:center}
+  .dart-num:active{background:var(--accent);color:white;transform:scale(.91)}
+  .dart-num.selected{background:var(--accent);color:white;border-color:var(--accent)}
+  .dart-miss{background:rgba(255,59,59,.1);color:var(--accent);border-color:rgba(255,59,59,.2);font-size:13px;grid-column:span 1}
+
+  /* MODAL */
   /* MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;align-items:center;justify-content:center;padding:16px}
   .modal-overlay.show{display:flex}
@@ -206,6 +219,29 @@
   .modal-actions .btn{flex:1}
 
   /* TOAST */
+  /* H2H */
+  .h2h-header{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px;text-align:center}
+  .h2h-name{flex:1;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;text-transform:uppercase;letter-spacing:1px}
+  .h2h-score{font-family:'Bebas Neue',cursive;font-size:36px;letter-spacing:3px;color:var(--accent);min-width:60px}
+  .h2h-stat{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px}
+  .h2h-stat:last-child{border-bottom:none}
+  .h2h-val{font-weight:700;font-family:'Barlow Condensed',sans-serif;font-size:15px}
+  .h2h-val.win{color:var(--green)}
+  .h2h-val.lose{color:var(--accent)}
+  .h2h-label{color:var(--muted)}
+
+  /* GOLDEN ARROW */
+  .gold-card{background:linear-gradient(135deg,rgba(255,215,0,.12),rgba(255,140,0,.08));border:1px solid rgba(255,215,0,.3);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+  .gold-title{font-family:'Bebas Neue',cursive;font-size:18px;letter-spacing:3px;color:var(--gold);margin-bottom:8px}
+  .gold-val{font-family:'Bebas Neue',cursive;font-size:42px;color:var(--gold);letter-spacing:3px;line-height:1}
+  .gold-sub{font-size:12px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-top:2px}
+  .gold-name{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-top:6px;text-transform:uppercase}
+
+  /* TEAM BADGE */
+  .team-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+  .team-a{background:rgba(255,59,59,.2);color:var(--accent);border:1px solid rgba(255,59,59,.3)}
+  .team-b{background:rgba(79,195,247,.2);color:var(--blue);border:1px solid rgba(79,195,247,.3)}
+
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;color:var(--text);z-index:9999;transition:transform .3s cubic-bezier(.175,.885,.32,1.275);white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
 
@@ -292,6 +328,23 @@
       <option value="straight">Straight Out (bármi)</option>
     </select>
   </div>
+  <div class="input-group">
+    <label class="input-label">Beviteli mód</label>
+    <select id="inputMode">
+      <option value="total">Összesített pont (egyszerű)</option>
+      <option value="dart">Nyílanként (Single/Double/Treble)</option>
+    </select>
+  </div>
+  <div class="input-group">
+    <label class="input-label">Meccs típusa</label>
+    <select id="matchType" onchange="renderSetupPlayers()">
+      <option value="singles">Singles (1v1, FFA)</option>
+      <option value="teams">Csapat (2v2)</option>
+    </select>
+  </div>
+  <div id="teamSetupWrap" style="display:none">
+    <div class="notice" style="margin-bottom:8px">👥 Válassz 4 játékost — az első kettő az A csapat, a másik kettő a B csapat</div>
+  </div>
   <div class="notice orange">⚡ PubGame: 501-nél 60, 301-nél 42 nyíl után aktiválódik — 3 nyíl, legtöbb pont nyer!</div>
   <div class="sep"></div>
   <div class="section-title">JÁTÉKOSOK <span>HOZZÁADÁSA</span></div>
@@ -331,7 +384,7 @@
   </div>
   <div class="voice-toggle">
     <span class="vt-label">🔊 Hang bejelentő</span>
-    <label class="toggle-sw"><input type="checkbox" id="voiceToggle" checked onchange="voiceEnabled=this.checked"><div class="toggle-track"></div><div class="toggle-knob"></div></label>
+    <label class="toggle-sw"><input type="checkbox" id="voiceToggle" onchange="voiceEnabled=this.checked"><div class="toggle-track"></div><div class="toggle-knob"></div></label>
   </div>
 
   <div id="pubgameBanner" class="pubgame-banner" style="display:none">🍺 PUB GAME — 3 NYÍL, LEGTÖBB PONT NYER!</div>
@@ -365,6 +418,48 @@
       <button class="num-btn btn-del" onclick="numDel()">⌫</button>
       <button class="num-btn" onclick="numInput('0')">0</button>
       <button class="num-btn btn-enter" onclick="submitScore()">BEÍR ✓</button>
+    </div>
+  </div>
+
+  <!-- Dart by dart numpad -->
+  <div id="dartNumpad" class="numpad-section" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div class="cin-label" style="margin:0">NYÍL BEVITEL</div>
+      <div id="dartCounter" style="font-family:'Bebas Neue',cursive;font-size:18px;color:var(--accent);letter-spacing:2px">1. NYÍL</div>
+    </div>
+    <div id="dartRunning" style="font-family:'Bebas Neue',cursive;font-size:32px;color:var(--text);text-align:center;letter-spacing:3px;margin-bottom:6px">0</div>
+    <div id="dartResult" class="cin-result" style="margin-bottom:8px"></div>
+    <!-- Multiplier tabs -->
+    <div class="dart-tabs">
+      <button class="dart-tab active" id="dtab-single" onclick="setDartMult(1,'single')">SINGLE</button>
+      <button class="dart-tab" id="dtab-double" onclick="setDartMult(2,'double')">DOUBLE</button>
+      <button class="dart-tab" id="dtab-treble" onclick="setDartMult(3,'treble')">TREBLE</button>
+      <button class="dart-tab" id="dtab-bull" onclick="setDartBull()">BULL<br><small>50</small></button>
+      <button class="dart-tab" id="dtab-outer" onclick="setDartOuter()">OUTER<br><small>25</small></button>
+    </div>
+    <!-- Number grid 1-20 -->
+    <div class="dart-numgrid">
+      <button class="dart-num" onclick="selectDartNum(1)">1</button>
+      <button class="dart-num" onclick="selectDartNum(2)">2</button>
+      <button class="dart-num" onclick="selectDartNum(3)">3</button>
+      <button class="dart-num" onclick="selectDartNum(4)">4</button>
+      <button class="dart-num" onclick="selectDartNum(5)">5</button>
+      <button class="dart-num" onclick="selectDartNum(6)">6</button>
+      <button class="dart-num" onclick="selectDartNum(7)">7</button>
+      <button class="dart-num" onclick="selectDartNum(8)">8</button>
+      <button class="dart-num" onclick="selectDartNum(9)">9</button>
+      <button class="dart-num" onclick="selectDartNum(10)">10</button>
+      <button class="dart-num" onclick="selectDartNum(11)">11</button>
+      <button class="dart-num" onclick="selectDartNum(12)">12</button>
+      <button class="dart-num" onclick="selectDartNum(13)">13</button>
+      <button class="dart-num" onclick="selectDartNum(14)">14</button>
+      <button class="dart-num" onclick="selectDartNum(15)">15</button>
+      <button class="dart-num" onclick="selectDartNum(16)">16</button>
+      <button class="dart-num" onclick="selectDartNum(17)">17</button>
+      <button class="dart-num" onclick="selectDartNum(18)">18</button>
+      <button class="dart-num" onclick="selectDartNum(19)">19</button>
+      <button class="dart-num" onclick="selectDartNum(20)">20</button>
+      <button class="dart-num dart-miss" onclick="selectDartMiss()">MISS</button>
     </div>
   </div>
 
@@ -497,9 +592,19 @@
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('slb')">RANGSOR</button>
     <button class="tab-btn" onclick="switchTab('sdetail')">RÉSZLETEK</button>
+    <button class="tab-btn" onclick="switchTab('sh2h')">H2H</button>
+    <button class="tab-btn" onclick="switchTab('sgold')">🥇 ARANY</button>
   </div>
   <div id="slb" class="tab-content active"><div id="leaderboardList"></div></div>
   <div id="sdetail" class="tab-content"><div id="detailStatsList"></div></div>
+  <div id="sh2h" class="tab-content">
+    <div class="input-group" style="display:flex;gap:7px">
+      <select id="h2hPlayer1" style="flex:1" onchange="renderH2H()"><option value="">Játékos 1...</option></select>
+      <select id="h2hPlayer2" style="flex:1" onchange="renderH2H()"><option value="">Játékos 2...</option></select>
+    </div>
+    <div id="h2hContent"></div>
+  </div>
+  <div id="sgold" class="tab-content"><div id="goldContent"></div></div>
   <div class="sep"></div>
   <button class="btn btn-danger" onclick="confirmClearStats()">STATISZTIKÁK TÖRLÉSE</button>
 </div>
@@ -603,9 +708,11 @@ const CHECKOUT = {
 
 // ===== STATE =====
 let state = {
-  players: JSON.parse(localStorage.getItem('dp_players')||'[]'),
-  stats:   JSON.parse(localStorage.getItem('dp_stats')||'{}'),
-  tournament: JSON.parse(localStorage.getItem('dp_tourney')||'null'),
+  players:     JSON.parse(localStorage.getItem('dp_players')||'[]'),
+  stats:       JSON.parse(localStorage.getItem('dp_stats')||'{}'),
+  tournament:  JSON.parse(localStorage.getItem('dp_tourney')||'null'),
+  h2h:         JSON.parse(localStorage.getItem('dp_h2h')||'{}'),
+  goldenArrow: JSON.parse(localStorage.getItem('dp_gold')||'{}'),
 };
 let game = null;
 let setupPlayers = [];
@@ -613,13 +720,22 @@ let tourneyPlayers = [];
 let currentInput = '';
 let pubInput = '';
 let bullState = null;
-let voiceEnabled = true;
+let voiceEnabled = false;
 let legHistory = []; // stores completed legs
+
+// Dart-by-dart input state
+let dartMode = false; // true = dart by dart mode
+let dartMult = 1; // 1=single, 2=double, 3=treble
+let dartMultType = 'single';
+let dartThrows = []; // current turn: [{score, label}]
+let dartTurnScore = 0;
 
 function saveState(){
   localStorage.setItem('dp_players', JSON.stringify(state.players));
   localStorage.setItem('dp_stats',   JSON.stringify(state.stats));
   localStorage.setItem('dp_tourney', JSON.stringify(state.tournament));
+  localStorage.setItem('dp_h2h',     JSON.stringify(state.h2h||{}));
+  localStorage.setItem('dp_gold',    JSON.stringify(state.goldenArrow||{}));
 }
 
 // ===== VALIDATION =====
@@ -907,16 +1023,28 @@ function addSetupPlayerByName(name){
 function renderSetupPlayers(){
   const el=document.getElementById('setupPlayerList');
   const ce=document.getElementById('setupPlayersCount');
+  const matchType = document.getElementById('matchType')?.value || 'singles';
+  const teamWrap = document.getElementById('teamSetupWrap');
+  if(teamWrap) teamWrap.style.display = matchType==='teams'?'block':'none';
+
   if(!setupPlayers.length){
     el.innerHTML='<div style="color:var(--muted);font-size:13px;margin-bottom:9px">Adj hozzá legalább 2 játékost</div>';
     ce.textContent=''; return;
   }
-  el.innerHTML=setupPlayers.map((p,i)=>`
-    <div class="player-tag">
-      <span class="name">🎯 ${esc(p)}</span>
+  el.innerHTML=setupPlayers.map((p,i)=>{
+    let badge='';
+    if(matchType==='teams'){
+      badge = i<2
+        ? '<span class="team-badge team-a">A CSAPAT</span>'
+        : '<span class="team-badge team-b">B CSAPAT</span>';
+    }
+    return `<div class="player-tag">
+      <span class="name">🎯 ${esc(p)} ${badge}</span>
       <button class="remove-btn" onclick="removeSetupPlayer(${i})">×</button>
-    </div>`).join('');
-  ce.textContent=`${setupPlayers.length} játékos`;
+    </div>`;
+  }).join('');
+  const needed = matchType==='teams'?'(4 fő kell)':'játékos';
+  ce.textContent=`${setupPlayers.length} ${needed}`;
 }
 function removeSetupPlayer(i){ setupPlayers.splice(i,1); renderSetupPlayers(); }
 
@@ -927,7 +1055,11 @@ function initBullThrow(){
   const mode  = parseInt(document.getElementById('gameMode').value);
   const legs  = parseInt(document.getElementById('legsCount').value);
   const outRule = document.getElementById('outRule').value;
-  bullState = { players:[...pList], selectedIdx:null, pendingGameArgs:[pList, mode, legs, undefined, outRule] };
+  const inputModeVal = document.getElementById('inputMode').value;
+  const matchType = document.getElementById('matchType').value;
+  // For teams: validate 4 players
+  if(matchType==='teams' && pList.length!==4){ showToast('⚠️ Csapat módhoz pontosan 4 játékos kell!'); return; }
+  bullState = { players:[...pList], selectedIdx:null, pendingGameArgs:[pList, mode, legs, undefined, outRule, inputModeVal, matchType] };
   renderBullScreen();
   showScreen('screen-bull');
 }
@@ -947,11 +1079,14 @@ function selectBullWinner(i){ bullState.selectedIdx=i; renderBullScreen(); }
 function confirmBullStart(){
   const args=bullState.pendingGameArgs;
   const players=args[0], mode=args[1], legs=args[2];
-  const tourneyIdx=args[3]; // undefined for normal games, number for tourney
+  const tourneyIdx=args[3];
   const outRule=args[4]||'double';
+  const inputModeVal=args[5]||'total';
+  const matchType=args[6]||'singles';
   const startIdx=bullState.selectedIdx;
   bullState=null;
-  startGame(players,mode,legs,startIdx,outRule);
+  startGame(players,mode,legs,startIdx,outRule,matchType);
+  dartMode = inputModeVal === 'dart';
   if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 function skipBull(){
@@ -959,18 +1094,32 @@ function skipBull(){
   const players=args[0], mode=args[1], legs=args[2];
   const tourneyIdx=args[3];
   const outRule=args[4]||'double';
+  const inputModeVal=args[5]||'total';
+  const matchType=args[6]||'singles';
   bullState=null;
-  startGame(players,mode,legs,Math.floor(Math.random()*players.length),outRule);
+  startGame(players,mode,legs,Math.floor(Math.random()*players.length),outRule,matchType);
+  dartMode = inputModeVal === 'dart';
   if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 
 // ===== GAME =====
-function startGame(players, mode, legs, startPlayerIdx=0, outRule='double'){
+function startGame(players, mode, legs, startPlayerIdx=0, outRule='double', matchType='singles'){
   const pubLimit = mode===501 ? 60 : 42;
   legHistory = [];
+  // Team mode: group players into teams
+  let teams = null;
+  if(matchType === 'teams' && players.length === 4){
+    teams = [
+      { name:'A Csapat', members:[players[0],players[1]], score:mode, legsWon:0, currentMember:0 },
+      { name:'B Csapat', members:[players[2],players[3]], score:mode, legsWon:0, currentMember:0 },
+    ];
+  }
+
   game = {
     mode, legs, pubLimit,
     outRule: outRule || 'double',
+    matchType: matchType || 'singles',
+    teams,
     isPubGame:false,
     pubState:null,
     players: players.map(name=>({
@@ -988,9 +1137,10 @@ function startGame(players, mode, legs, startPlayerIdx=0, outRule='double'){
     _tourneyMatchIdx: undefined,
   };
   currentInput=''; pubInput='';
+  dartMode = false; dartThrows = []; dartTurnScore = 0;
+  game.currentTeam = 0; // for team mode
   renderGame();
   showScreen('screen-game');
-  // Announce first player
   playSoundQueue(['gameon']);
 }
 
@@ -1000,10 +1150,28 @@ function renderGame(){
   document.getElementById('gameBadge').textContent=game.mode;
   const needed=Math.ceil(game.legs/2);
   const outTag = game.outRule==='double'?'DO':'SO';
-  document.getElementById('gameInfo').innerHTML=`KÖR ${game.roundNumber}<br>${game.isPubGame?'🍺 PUB':`${needed}/${game.legs} · ${outTag}`}`;
+  let infoLine = '';
+  if(game.matchType==='teams' && game.teams && !game.isPubGame){
+    const ct = game.teams[game.currentTeam];
+    const cp = ct ? ct.members[ct.currentMember] : '';
+    infoLine = `<br><span style="font-size:11px;color:var(--accent)">${esc(cp)}</span>`;
+  }
+  document.getElementById('gameInfo').innerHTML=`KÖR ${game.roundNumber}<br>${game.isPubGame?'🍺 PUB':`${needed}/${game.legs} · ${outTag}`}${infoLine}`;
   document.getElementById('pubgameBanner').style.display=game.isPubGame?'block':'none';
-  document.getElementById('normalNumpad').style.display=game.isPubGame?'none':'block';
-  document.getElementById('pubNumpad').style.display=game.isPubGame?'block':'none';
+  if(game.isPubGame){
+    document.getElementById('normalNumpad').style.display='none';
+    document.getElementById('dartNumpad').style.display='none';
+    document.getElementById('pubNumpad').style.display='block';
+  } else if(dartMode){
+    document.getElementById('normalNumpad').style.display='none';
+    document.getElementById('dartNumpad').style.display='block';
+    document.getElementById('pubNumpad').style.display='none';
+    renderDartDisplay();
+  } else {
+    document.getElementById('normalNumpad').style.display='block';
+    document.getElementById('dartNumpad').style.display='none';
+    document.getElementById('pubNumpad').style.display='none';
+  }
 
   // Undo button
   const undoBtn=document.getElementById('undoBtn');
@@ -1083,9 +1251,31 @@ function renderRoundLog(){
 }
 
 // ===== NUMPAD =====
-function numInput(d){ if(currentInput.length>=3)return; currentInput+=d; renderInputDisplay(); }
-function numDel(){ currentInput=currentInput.slice(0,-1); renderInputDisplay(); }
-function quickScore(s){ currentInput=String(s); renderInputDisplay(); }
+function numInput(d){ if(currentInput.length>=3)return; currentInput+=d; renderInputDisplay(); renderCheckoutHintLive(); }
+function numDel(){ currentInput=currentInput.slice(0,-1); renderInputDisplay(); renderCheckoutHintLive(); }
+function quickScore(s){ currentInput=String(s); renderInputDisplay(); renderCheckoutHintLive(); }
+
+function renderCheckoutHintLive(){
+  // Show checkout hint based on what would remain after current input
+  const el=document.getElementById('checkoutHint');
+  if(!el||game.isPubGame||!currentInput){
+    renderCheckoutHint(); return;
+  }
+  const score=parseInt(currentInput);
+  if(isNaN(score)){ renderCheckoutHint(); return; }
+  const player=game.players[game.currentPlayer];
+  const rem=player.score-score;
+  const isDoubleOut=game.outRule==='double';
+  if(rem>0 && rem<=170 && CHECKOUT[rem]){
+    el.style.display='block';
+    el.innerHTML=`<strong>🎯 CHECKOUT ${rem} után — ${rem}</strong>${CHECKOUT[rem]}`;
+  } else if(rem===0){
+    el.style.display='block';
+    el.innerHTML=`<strong style="color:var(--green)">🎯 CHECKOUT!</strong>${CHECKOUT[score]||''}`;
+  } else {
+    renderCheckoutHint();
+  }
+}
 
 function submitScore(){
   if(!currentInput) return;
@@ -1125,6 +1315,8 @@ function submitScore(){
     player.dartsThrown+=3; player.legDartsThrown+=3;
     player.pointsScored+=score;
     game.log.push({player:player.name,score,bust:false,remaining});
+    // Golden arrow tracking
+    updateGoldenArrow(player.name, score, remaining===0, null);
     game.legLog.push({player:player.name,score,bust:false,remaining});
     if(remaining===0){
       const needed=Math.ceil(game.legs/2);
@@ -1142,7 +1334,6 @@ function submitScore(){
     setTimeout(()=>announceScore(score, remaining, false), 0);
   }
 
-  currentInput='';
   advancePlayer();
   if(!game.isPubGame && game.players.every(p=>p.legDartsThrown>=game.pubLimit)){
     triggerPubGame(); return;
@@ -1154,13 +1345,18 @@ function submitScore(){
 function undoLastScore(){
   if(!game||game.undoStack.length===0) return;
   const snap=game.undoStack.pop();
-  // Restore player states
-  game.players=snap.scoreSnapshot.map(p=>({...p}));
+  if(snap.teamsSnapshot){
+    // Team mode undo
+    game.teams = snap.teamsSnapshot.map(t=>({...t}));
+    game.currentTeam = snap.currentTeam;
+  } else {
+    game.players=snap.scoreSnapshot.map(p=>({...p}));
+    game.firstPlayerOfLeg=snap.firstPlayerOfLeg;
+    game.currentPlayer=snap.currentPlayer;
+  }
   game.log.splice(snap.logLength);
   game.legLog.splice(snap.legLogLength);
   game.roundNumber=snap.roundNumber;
-  game.firstPlayerOfLeg=snap.firstPlayerOfLeg;
-  game.currentPlayer=snap.currentPlayer;
   game.isPubGame=snap.isPubGame;
   currentInput='';
   showToast('↩ Visszavonva');
@@ -1169,11 +1365,29 @@ function undoLastScore(){
 
 // ===== LEG HISTORY =====
 function saveLegToHistory(winnerName){
+  // Calculate leg stats
+  const winnerTurns = game.legLog.filter(t=>t.player===winnerName&&!t.bust);
+  const winnerDarts = game.players.find(p=>p.name===winnerName)?.legDartsThrown || 0;
+  const winnerPoints = game.mode - (game.players.find(p=>p.name===winnerName)?.score||0);
+  const first9 = game.legLog.filter(t=>t.player===winnerName).slice(0,3).reduce((s,t)=>s+(t.bust?0:t.score),0);
+
   legHistory.push({
     legNumber: legHistory.length+1,
     winner: winnerName,
     turns: [...game.legLog],
     mode: game.mode,
+    winnerDarts,
+    stats: game.players.map(p=>{
+      const pTurns = game.legLog.filter(t=>t.player===p.name);
+      const nonBust = pTurns.filter(t=>!t.bust);
+      const totalPts = nonBust.reduce((s,t)=>s+t.score,0);
+      const darts = p.legDartsThrown;
+      const avg = darts>0?((totalPts/darts)*3).toFixed(1):'-';
+      const first9pts = pTurns.slice(0,3).reduce((s,t)=>s+(t.bust?0:t.score),0);
+      const first9avg = 9>0?((first9pts/9)*3).toFixed(1):'-';
+      const highest = nonBust.length>0?Math.max(...nonBust.map(t=>t.score)):0;
+      return { name:p.name, avg, first9avg, darts, highest, legsWon:p.legsWon };
+    })
   });
   game.legLog=[];
 }
@@ -1183,19 +1397,34 @@ function showLegHistory(){
   if(!legHistory.length){
     el.innerHTML='<div style="color:var(--muted);font-size:13px">Még nincsenek befejezett lábak</div>';
   } else {
-    el.innerHTML=legHistory.map(leg=>`
+    el.innerHTML=legHistory.map(leg=>{
+      const statsHtml = leg.stats ? `
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          ${leg.stats.map(s=>`
+            <div style="flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">${esc(s.name)}</div>
+              <div style="font-family:'Bebas Neue',cursive;font-size:24px;color:var(--text);letter-spacing:1px">${s.avg}</div>
+              <div style="font-size:10px;color:var(--muted)">3-nyilas átlag</div>
+              <div style="font-size:12px;color:var(--muted);margin-top:3px">1. 9 nyíl: ${s.first9avg}</div>
+              <div style="font-size:12px;color:var(--muted)">Max: ${s.highest} · ${s.darts} nyíl</div>
+            </div>`).join('')}
+        </div>` : '';
+      return `
       <div class="leg-hist-entry">
         <div class="lhe-header">
           <span>🎯 ${leg.legNumber}. LÁB · ${leg.mode}</span>
-          <span>🏆 ${esc(leg.winner)}</span>
+          <span>🏆 ${esc(leg.winner)}${leg.winnerDarts?' · '+leg.winnerDarts+' nyíl':''}</span>
         </div>
+        ${statsHtml}
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">DOBÁSOK</div>
         ${leg.turns.map(t=>`
           <div class="lhe-row">
             <span class="lhe-player">${esc(t.player)}</span>
             <span class="lhe-pts">${t.score} pt</span>
             ${t.bust?'<span class="lhe-bust">BUST</span>':`<span class="lhe-rem">→${t.remaining}</span>`}
           </div>`).join('')}
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
   document.getElementById('legHistModal').classList.add('show');
 }
@@ -1204,6 +1433,100 @@ function showLegHistory(){
 function advancePlayer(){
   game.currentPlayer=(game.currentPlayer+1)%game.players.length;
   if(game.currentPlayer===game.firstPlayerOfLeg) game.roundNumber++;
+}
+
+function submitScoreTeam(score){
+  const teams = game.teams;
+  const team = teams[game.currentTeam];
+  const remaining = team.score - score;
+
+  // Save undo
+  game.undoStack.push({
+    teamsSnapshot: teams.map(t=>({...t})),
+    logLength: game.log.length,
+    legLogLength: game.legLog.length,
+    roundNumber: game.roundNumber,
+    currentTeam: game.currentTeam,
+    isPubGame: game.isPubGame,
+  });
+
+  const currentPlayerName = team.members[team.currentMember];
+
+  if(remaining < 0 || remaining === 1){
+    // BUST
+    game.log.push({player:currentPlayerName, score, bust:true, remaining:team.score});
+    game.legLog.push({player:currentPlayerName, score, bust:true, remaining:team.score});
+    showToast(`💥 ${currentPlayerName}: BUST!`);
+  } else {
+    team.score = remaining;
+    game.log.push({player:currentPlayerName, score, bust:false, remaining});
+    game.legLog.push({player:currentPlayerName, score, bust:false, remaining});
+    if(remaining === 0){
+      team.legsWon++;
+      const needed = Math.ceil(game.legs/2);
+      if(team.legsWon >= needed){
+        endGameTeam(team); return;
+      }
+      showToast(`🎯 ${team.name} nyerte a lábat!`);
+      // Reset leg
+      teams.forEach(t=>{ t.score=game.mode; t.currentMember=0; });
+      game.currentTeam = (game.currentTeam+1)%2;
+      game.roundNumber++;
+      currentInput=''; renderGame(); return;
+    }
+  }
+
+  // Advance within team then switch team
+  team.currentMember = (team.currentMember+1) % team.members.length;
+  game.currentTeam = (game.currentTeam+1) % 2;
+  currentInput='';
+
+  // PubGame check
+  if(!game.isPubGame){
+    const totalDartsA = teams[0].members.length * 3;
+    // Simple check: if round >= pubLimit/3
+    if(game.roundNumber * 3 >= game.pubLimit){
+      triggerPubGameTeam(); return;
+    }
+  }
+  renderGame();
+}
+
+function endGameTeam(winTeam){
+  // Save basic stats for team members
+  winTeam.members.forEach(name=>{
+    if(!state.stats[name]) state.stats[name]={wins:0,games:0,totalDarts:0,totalPoints:0,pubWins:0};
+    state.stats[name].wins++;
+    state.stats[name].games++;
+  });
+  game.teams.filter(t=>t!==winTeam).forEach(t=>{
+    t.members.forEach(name=>{
+      if(!state.stats[name]) state.stats[name]={wins:0,games:0,totalDarts:0,totalPoints:0,pubWins:0};
+      state.stats[name].games++;
+    });
+  });
+  saveState();
+  document.getElementById('winName').textContent = winTeam.name;
+  document.getElementById('winMethod').textContent = `${winTeam.members.map(esc).join(' & ')} NYERTEK!`;
+  document.getElementById('winStats').innerHTML = `
+    <div class="stat-row"><span class="sr-label">Tagok</span><span class="sr-val">${winTeam.members.map(esc).join(', ')}</span></div>
+    <div class="stat-row"><span class="sr-label">Lábak</span><span class="sr-val">${winTeam.legsWon}</span></div>
+    <div class="stat-row"><span class="sr-label">Játékmód</span><span class="sr-val">${game.mode}</span></div>`;
+  showScreen('screen-win');
+}
+
+function triggerPubGameTeam(){
+  game.isPubGame = true;
+  // All players throw in pub game
+  const allPlayers = game.teams.flatMap(t=>t.members);
+  game.pubState = {
+    scores: allPlayers.map(name=>({name, score:null, team:game.teams.findIndex(t=>t.members.includes(name))})),
+    currentIdx: 0,
+    isTeamPub: true
+  };
+  pubInput='';
+  showToast('🍺 PUB GAME INDUL!', 2500);
+  renderGame();
 }
 function resetLeg(){
   game.players.forEach(p=>{ p.score=game.mode; p.legDartsThrown=0; });
@@ -1286,6 +1609,22 @@ function endGame(winner, isPub){
     s[p.name].totalDarts=(s[p.name].totalDarts||0)+p.dartsThrown;
     s[p.name].totalPoints=(s[p.name].totalPoints||0)+p.pointsScored;
   });
+
+  // H2H stats (only for 1v1)
+  if(game.players.length === 2){
+    const loser = game.players.find(p=>p.name!==winner.name);
+    if(loser){
+      const winAvg = calcAvg(winner.pointsScored, winner.dartsThrown);
+      const loseAvg = calcAvg(loser.pointsScored, loser.dartsThrown);
+      // Comeback: winner was behind in legs at some point
+      const wasComeback = winner.legsWon > 0 && loser.legsWon >= winner.legsWon;
+      updateH2HStats(winner.name, loser.name, winAvg, loseAvg, wasComeback, game);
+    }
+  }
+
+  // Golden arrow records
+  const winAvg = parseFloat(calcAvg(winner.pointsScored, winner.dartsThrown));
+  updateGoldenArrow(winner.name, 0, false, isNaN(winAvg)?0:winAvg);
   // Update tourney bracket if applicable
   if(game._tourneyMatchIdx!==undefined && state.tournament){
     const idx=game._tourneyMatchIdx;
@@ -1320,6 +1659,258 @@ function startRematch(){
 }
 function confirmQuit(){ document.getElementById('quitModal').classList.add('show'); }
 function quitGame(){ closeModal('quitModal'); showScreen('screen-home'); }
+
+// ===== DART BY DART MODE =====
+function setDartMult(mult, type){
+  dartMult = mult;
+  dartMultType = type;
+  document.querySelectorAll('.dart-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dtab-'+type).classList.add('active');
+  renderDartDisplay();
+}
+
+function setDartBull(){
+  // Bull = 50 (double 25), count as double
+  dartMult = 1;
+  dartMultType = 'bull';
+  document.querySelectorAll('.dart-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dtab-bull').classList.add('active');
+  addDartThrow(50, 'BULL');
+}
+
+function setDartOuter(){
+  // Outer bull = 25
+  dartMult = 1;
+  dartMultType = 'outer';
+  document.querySelectorAll('.dart-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dtab-outer').classList.add('active');
+  addDartThrow(25, 'OUTER');
+}
+
+function selectDartMiss(){
+  addDartThrow(0, 'MISS');
+}
+
+function selectDartNum(num){
+  const score = num * dartMult;
+  const prefix = dartMultType==='single'?'S':dartMultType==='double'?'D':'T';
+  const label = prefix + num;
+  addDartThrow(score, label);
+}
+
+function addDartThrow(score, label){
+  if(dartThrows.length >= 3) return;
+  dartThrows.push({score, label});
+  dartTurnScore += score;
+  if(dartThrows.length === 3){
+    // Auto submit after 3 darts
+    setTimeout(submitDartTurn, 300);
+  }
+  // Reset multiplier to single after each dart
+  setDartMultSilent(1, 'single');
+  renderDartDisplay();
+}
+
+function setDartMultSilent(mult, type){
+  dartMult = mult;
+  dartMultType = type;
+  document.querySelectorAll('.dart-tab').forEach(b=>b.classList.remove('active'));
+  const el = document.getElementById('dtab-'+type);
+  if(el) el.classList.add('active');
+}
+
+function renderDartDisplay(){
+  const counter = document.getElementById('dartCounter');
+  const running = document.getElementById('dartRunning');
+  const result = document.getElementById('dartResult');
+  if(!counter || !running) return;
+
+  const dartNum = dartThrows.length + 1;
+  if(dartThrows.length < 3){
+    counter.textContent = dartNum + '. NYÍL';
+  }
+
+  // Show throw labels
+  const labels = dartThrows.map(d=>d.label).join(' + ');
+  running.textContent = dartTurnScore || '0';
+
+  // Show remaining
+  const player = game.players[game.currentPlayer];
+  const rem = player.score - dartTurnScore;
+  if(dartThrows.length > 0){
+    if(rem < 0 || rem === 1){
+      result.textContent = 'BUST! 💥';
+      result.className = 'cin-result bust';
+    } else if(rem === 0){
+      result.textContent = '🎯 CHECKOUT! ' + labels;
+      result.className = 'cin-result valid';
+    } else {
+      result.textContent = labels + (labels?' → ':'') + 'Marad: ' + rem;
+      result.className = 'cin-result valid';
+    }
+  } else {
+    result.textContent = '';
+    result.className = 'cin-result';
+  }
+}
+
+function undoDartThrow(){
+  if(dartThrows.length === 0) return;
+  const last = dartThrows.pop();
+  dartTurnScore -= last.score;
+  renderDartDisplay();
+}
+
+function submitDartTurn(){
+  if(dartThrows.length === 0) return;
+  // Pad to 3 darts if less (player chose to submit early - not typical but allow)
+  const score = dartTurnScore;
+  // Reset dart state
+  dartThrows = [];
+  dartTurnScore = 0;
+  setDartMultSilent(1, 'single');
+  document.getElementById('dartCounter').textContent = '1. NYÍL';
+  document.getElementById('dartRunning').textContent = '0';
+  document.getElementById('dartResult').textContent = '';
+  document.getElementById('dartResult').className = 'cin-result';
+  // Submit as regular score
+  submitScoreValue(score);
+}
+
+// ===== HEAD TO HEAD & GOLDEN ARROW =====
+
+function renderH2H(){
+  const p1 = document.getElementById('h2hPlayer1').value;
+  const p2 = document.getElementById('h2hPlayer2').value;
+  const el = document.getElementById('h2hContent');
+  if(!p1 || !p2 || p1===p2){
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">⚔️</div><div class="es-text">Válassz két játékost</div></div>';
+    return;
+  }
+  const h2h = state.h2h || {};
+  const key = [p1,p2].sort().join('|');
+  const data = h2h[key] || {};
+  const p1wins = data[p1+'_wins'] || 0;
+  const p2wins = data[p2+'_wins'] || 0;
+  const p1avg = data[p1+'_avgTotal'] && data[p1+'_games'] ? ((data[p1+'_avgTotal']/data[p1+'_games'])).toFixed(1) : '-';
+  const p2avg = data[p2+'_avgTotal'] && data[p2+'_games'] ? ((data[p2+'_avgTotal']/data[p2+'_games'])).toFixed(1) : '-';
+  const p1cb = data[p1+'_comebacks'] || 0;
+  const p2cb = data[p2+'_comebacks'] || 0;
+  const p1streak = data[p1+'_streak'] || 0;
+  const p2streak = data[p2+'_streak'] || 0;
+  const total = p1wins + p2wins;
+
+  el.innerHTML = `
+    <div class="h2h-header">
+      <div class="h2h-name">${esc(p1)}</div>
+      <div class="h2h-score">${p1wins}<span style="color:var(--muted);font-size:20px"> - </span>${p2wins}</div>
+      <div class="h2h-name">${esc(p2)}</div>
+    </div>
+    <div class="card">
+      <div class="h2h-stat">
+        <span class="h2h-val ${p1wins>p2wins?'win':p1wins<p2wins?'lose':''}">${p1wins}</span>
+        <span class="h2h-label">Győzelmek</span>
+        <span class="h2h-val ${p2wins>p1wins?'win':p2wins<p1wins?'lose':''}">${p2wins}</span>
+      </div>
+      <div class="h2h-stat">
+        <span class="h2h-val">${p1avg}</span>
+        <span class="h2h-label">3-nyilas átlag</span>
+        <span class="h2h-val">${p2avg}</span>
+      </div>
+      <div class="h2h-stat">
+        <span class="h2h-val">${p1cb}</span>
+        <span class="h2h-label">⚡ Comeback győzelmek</span>
+        <span class="h2h-val">${p2cb}</span>
+      </div>
+      <div class="h2h-stat">
+        <span class="h2h-val">${p1streak > 0 ? '🔥 '+p1streak : p1streak}</span>
+        <span class="h2h-label">Jelenlegi sorozat</span>
+        <span class="h2h-val">${p2streak > 0 ? '🔥 '+p2streak : p2streak}</span>
+      </div>
+      <div class="h2h-stat">
+        <span class="h2h-val">${total > 0 ? Math.round(p1wins/total*100)+'%' : '-'}</span>
+        <span class="h2h-label">Győzelmi arány</span>
+        <span class="h2h-val">${total > 0 ? Math.round(p2wins/total*100)+'%' : '-'}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderGoldenArrow(){
+  const el = document.getElementById('goldContent');
+  const gold = state.goldenArrow || {};
+  if(!Object.keys(gold).length){
+    el.innerHTML = '<div class="empty-state"><div class="es-icon">🥇</div><div class="es-text">Még nincs arangy nyíl rekord</div></div>';
+    return;
+  }
+  // Best single score ever
+  const bestScore = Object.entries(gold).sort((a,b)=>b[1].bestScore-a[1].bestScore)[0];
+  // Best checkout ever
+  const bestCheckout = Object.entries(gold).filter(([k,v])=>v.bestCheckout).sort((a,b)=>b[1].bestCheckout-a[1].bestCheckout)[0];
+  // Most 180s
+  const most180 = Object.entries(gold).sort((a,b)=>b[1].total180-a[1].total180)[0];
+  // Best avg single game
+  const bestAvg = Object.entries(gold).filter(([k,v])=>v.bestAvg).sort((a,b)=>b[1].bestAvg-a[1].bestAvg)[0];
+
+  el.innerHTML = `
+    ${bestScore ? `<div class="gold-card">
+      <div class="gold-title">🥇 LEGJOBB DOBÁS</div>
+      <div class="gold-val">${bestScore[1].bestScore}</div>
+      <div class="gold-name">${esc(bestScore[0])}</div>
+    </div>` : ''}
+    ${most180 && most180[1].total180 > 0 ? `<div class="gold-card">
+      <div class="gold-title">🎯 LEGTÖBB 180-AS</div>
+      <div class="gold-val">${most180[1].total180}</div>
+      <div class="gold-name">${esc(most180[0])}</div>
+    </div>` : ''}
+    ${bestCheckout ? `<div class="gold-card">
+      <div class="gold-title">⚡ LEGJOBB KISZÁLLÓ</div>
+      <div class="gold-val">${bestCheckout[1].bestCheckout}</div>
+      <div class="gold-name">${esc(bestCheckout[0])}</div>
+    </div>` : ''}
+    ${bestAvg ? `<div class="gold-card">
+      <div class="gold-title">📊 LEGJOBB MECCS ÁTLAG</div>
+      <div class="gold-val">${bestAvg[1].bestAvg}</div>
+      <div class="gold-name">${esc(bestAvg[0])}</div>
+    </div>` : ''}
+  `;
+}
+
+function updateH2HStats(winner, loser, winnerAvg, loserAvg, wasComeback, game){
+  if(!state.h2h) state.h2h = {};
+  const key = [winner, loser].sort().join('|');
+  if(!state.h2h[key]) state.h2h[key] = {};
+  const d = state.h2h[key];
+
+  // Winner stats
+  d[winner+'_wins'] = (d[winner+'_wins']||0) + 1;
+  d[winner+'_games'] = (d[winner+'_games']||0) + 1;
+  d[winner+'_avgTotal'] = (d[winner+'_avgTotal']||0) + parseFloat(winnerAvg||0);
+  if(wasComeback) d[winner+'_comebacks'] = (d[winner+'_comebacks']||0) + 1;
+  // Streak
+  if(d[winner+'_lastResult'] === 'win'){
+    d[winner+'_streak'] = (d[winner+'_streak']||0) + 1;
+  } else {
+    d[winner+'_streak'] = 1;
+  }
+  d[winner+'_lastResult'] = 'win';
+
+  // Loser stats
+  d[loser+'_games'] = (d[loser+'_games']||0) + 1;
+  d[loser+'_avgTotal'] = (d[loser+'_avgTotal']||0) + parseFloat(loserAvg||0);
+  d[loser+'_streak'] = 0;
+  d[loser+'_lastResult'] = 'loss';
+}
+
+function updateGoldenArrow(playerName, score, isCheckout, avg){
+  if(!state.goldenArrow) state.goldenArrow = {};
+  if(!state.goldenArrow[playerName]) state.goldenArrow[playerName] = {bestScore:0, bestCheckout:0, total180:0, bestAvg:0};
+  const g = state.goldenArrow[playerName];
+  if(score > g.bestScore) g.bestScore = score;
+  if(score === 180) g.total180++;
+  if(isCheckout && score > g.bestCheckout) g.bestCheckout = score;
+  if(avg && parseFloat(avg) > g.bestAvg) g.bestAvg = parseFloat(avg);
+}
 
 // ===== TOURNAMENT =====
 function onTourneyTypeChange(){
@@ -1583,6 +2174,16 @@ function renderLeaderboard(){
   const lbEl=document.getElementById('leaderboardList');
   const dtEl=document.getElementById('detailStatsList');
   const entries=Object.entries(state.stats).sort((a,b)=>b[1].wins-a[1].wins);
+  // Populate H2H dropdowns
+  const h2hP1 = document.getElementById('h2hPlayer1');
+  const h2hP2 = document.getElementById('h2hPlayer2');
+  if(h2hP1 && h2hP2){
+    const opts = '<option value="">Játékos...</option>' + entries.map(([name])=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
+    h2hP1.innerHTML = opts;
+    h2hP2.innerHTML = opts;
+  }
+  // Render golden arrow
+  renderGoldenArrow();
   if(!entries.length){
     lbEl.innerHTML='<div class="empty-state"><div class="es-icon">📊</div><div class="es-text">Még nincsenek statisztikák</div></div>';
     dtEl.innerHTML=''; return;
@@ -1610,7 +2211,7 @@ function renderLeaderboard(){
   }).join('');
 }
 function confirmClearStats(){ document.getElementById('clearStatsModal').classList.add('show'); }
-function clearStats(){ state.stats={}; saveState(); closeModal('clearStatsModal'); renderLeaderboard(); showToast('Statisztikák törölve'); }
+function clearStats(){ state.stats={}; state.h2h={}; state.goldenArrow={}; saveState(); closeModal('clearStatsModal'); renderLeaderboard(); showToast('Statisztikák törölve'); }
 
 // ===== INIT =====
 onTourneyTypeChange();
