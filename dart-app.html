@@ -285,6 +285,13 @@
       <option value="5">Legjobb 3/5-ből</option>
     </select>
   </div>
+  <div class="input-group">
+    <label class="input-label">Kiszállás szabály</label>
+    <select id="outRule">
+      <option value="double">Double Out (hivatalos)</option>
+      <option value="straight">Straight Out (bármi)</option>
+    </select>
+  </div>
   <div class="notice orange">⚡ PubGame: 501-nél 60, 301-nél 42 nyíl után aktiválódik — 3 nyíl, legtöbb pont nyer!</div>
   <div class="sep"></div>
   <div class="section-title">JÁTÉKOSOK <span>HOZZÁADÁSA</span></div>
@@ -919,7 +926,8 @@ function initBullThrow(){
   if(pList.length < 2){ showToast('⚠️ Legalább 2 játékos kell!'); return; }
   const mode  = parseInt(document.getElementById('gameMode').value);
   const legs  = parseInt(document.getElementById('legsCount').value);
-  bullState = { players:[...pList], selectedIdx:null, pendingGameArgs:[pList, mode, legs] };
+  const outRule = document.getElementById('outRule').value;
+  bullState = { players:[...pList], selectedIdx:null, pendingGameArgs:[pList, mode, legs, undefined, outRule] };
   renderBullScreen();
   showScreen('screen-bull');
 }
@@ -939,27 +947,30 @@ function selectBullWinner(i){ bullState.selectedIdx=i; renderBullScreen(); }
 function confirmBullStart(){
   const args=bullState.pendingGameArgs;
   const players=args[0], mode=args[1], legs=args[2];
-  const tourneyIdx=args.length>=4?args[3]:undefined;
+  const tourneyIdx=args[3]; // undefined for normal games, number for tourney
+  const outRule=args[4]||'double';
   const startIdx=bullState.selectedIdx;
   bullState=null;
-  startGame(players,mode,legs,startIdx);
+  startGame(players,mode,legs,startIdx,outRule);
   if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 function skipBull(){
   const args=bullState.pendingGameArgs;
   const players=args[0], mode=args[1], legs=args[2];
-  const tourneyIdx=args.length>=4?args[3]:undefined;
+  const tourneyIdx=args[3];
+  const outRule=args[4]||'double';
   bullState=null;
-  startGame(players,mode,legs,Math.floor(Math.random()*players.length));
+  startGame(players,mode,legs,Math.floor(Math.random()*players.length),outRule);
   if(tourneyIdx!==undefined) game._tourneyMatchIdx=tourneyIdx;
 }
 
 // ===== GAME =====
-function startGame(players, mode, legs, startPlayerIdx=0){
+function startGame(players, mode, legs, startPlayerIdx=0, outRule='double'){
   const pubLimit = mode===501 ? 60 : 42;
   legHistory = [];
   game = {
     mode, legs, pubLimit,
+    outRule: outRule || 'double',
     isPubGame:false,
     pubState:null,
     players: players.map(name=>({
@@ -988,7 +999,8 @@ function calcAvg(pts,darts){ return darts>0?((pts/darts)*3).toFixed(1):'-'; }
 function renderGame(){
   document.getElementById('gameBadge').textContent=game.mode;
   const needed=Math.ceil(game.legs/2);
-  document.getElementById('gameInfo').innerHTML=`KÖR ${game.roundNumber}<br>${game.isPubGame?'🍺 PUB':`${needed}/${game.legs} láb`}`;
+  const outTag = game.outRule==='double'?'DO':'SO';
+  document.getElementById('gameInfo').innerHTML=`KÖR ${game.roundNumber}<br>${game.isPubGame?'🍺 PUB':`${needed}/${game.legs} · ${outTag}`}`;
   document.getElementById('pubgameBanner').style.display=game.isPubGame?'block':'none';
   document.getElementById('normalNumpad').style.display=game.isPubGame?'none':'block';
   document.getElementById('pubNumpad').style.display=game.isPubGame?'block':'none';
@@ -1024,9 +1036,14 @@ function renderCheckoutHint(){
   if(!el||game.isPubGame){if(el)el.style.display='none';return;}
   const player=game.players[game.currentPlayer];
   const rem=player.score;
+  const isDoubleOut = game.outRule === 'double';
   if(rem<=170 && rem>=2 && CHECKOUT[rem]){
     el.style.display='block';
-    el.innerHTML=`<strong>🎯 CHECKOUT — ${rem}</strong>${CHECKOUT[rem]}`;
+    const tag = isDoubleOut ? '🎯 DOUBLE OUT' : '🎯 CHECKOUT';
+    el.innerHTML=`<strong>${tag} — ${rem}</strong>${CHECKOUT[rem]}`;
+  } else if(rem===1 && isDoubleOut){
+    el.style.display='block';
+    el.innerHTML=`<strong style="color:var(--accent)">⚠️ BUST ha befejező</strong>1-re nem lehet kiszállni duplával`;
   } else {
     el.style.display='none';
   }
@@ -1044,8 +1061,11 @@ function renderInputDisplay(){
     if(err){ res.textContent=err; res.className='cin-result invalid'; }
     else {
       const rem=player.score-score;
+      const dblOut = game.outRule==='double';
       if(rem<0||rem===1){ res.textContent='BUST! 💥'; res.className='cin-result bust'; }
-      else if(rem===0){ res.textContent='🎯 CHECKOUT!'; res.className='cin-result valid'; }
+      else if(rem===0){
+        res.textContent='🎯 CHECKOUT!'; res.className='cin-result valid';
+      }
       else { res.textContent=`Marad: ${rem}`; res.className='cin-result valid'; }
     }
   } else { res.textContent=''; res.className='cin-result'; }
@@ -1090,6 +1110,11 @@ function submitScore(){
   });
   if(game.undoStack.length>10) game.undoStack.shift();
 
+  // Double out check: if outRule is double, score of 1 remaining is already bust (handled)
+  // Additional: if remaining would be odd and <= 1, bust
+  const isDoubleOut = game.outRule === 'double';
+  // With double out, you cannot finish on 1 (no double 0.5 exists)
+  // remaining===1 is already bust below
   if(remaining<0||remaining===1){
     player.dartsThrown+=3; player.legDartsThrown+=3;
     game.log.push({player:player.name,score,bust:true,remaining:player.score});
@@ -1101,21 +1126,20 @@ function submitScore(){
     player.pointsScored+=score;
     game.log.push({player:player.name,score,bust:false,remaining});
     game.legLog.push({player:player.name,score,bust:false,remaining});
-    setTimeout(()=>announceScore(score, remaining, false), 0);
     if(remaining===0){
       const needed=Math.ceil(game.legs/2);
       player.legsWon++;
       saveLegToHistory(player.name);
+      // Play checkout then legwon/winner in sequence
       if(player.legsWon>=needed){
-        // Wait for checkout sound then play winner
-        setTimeout(()=>playSoundQueue(['swinner']), 1200);
+        playSoundQueue(['scheckout','swinner']);
         endGame(player,false); return;
       }
-      // Wait for checkout sound then play legwon
-      setTimeout(()=>playSoundQueue(['legwon']), 1200);
+      playSoundQueue(['scheckout','legwon']);
       showToast(`🎯 ${player.name} nyerte a lábat!`);
       resetLeg(); currentInput=''; renderGame(); return;
     }
+    setTimeout(()=>announceScore(score, remaining, false), 0);
   }
 
   currentInput='';
