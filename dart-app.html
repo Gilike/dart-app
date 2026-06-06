@@ -360,11 +360,11 @@
   <div style="margin-top:16px">
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;text-align:center">TÉMA</div>
     <div style="display:flex;gap:8px;justify-content:center">
-      <button class="theme-btn" onclick="setTheme('')" style="background:linear-gradient(135deg,#ff3b3b,#ff8c00)" title="Piros"></button>
-      <button class="theme-btn" onclick="setTheme('green')" style="background:linear-gradient(135deg,#00c853,#64dd17)" title="Zöld"></button>
-      <button class="theme-btn" onclick="setTheme('blue')" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" title="Kék"></button>
-      <button class="theme-btn" onclick="setTheme('gold')" style="background:linear-gradient(135deg,#ffd700,#ffab00)" title="Fekete-arany"></button>
-      <button class="theme-btn" onclick="setTheme('purple')" style="background:linear-gradient(135deg,#aa00ff,#e040fb)" title="Lila"></button>
+      <button class="theme-btn" data-theme="" style="background:linear-gradient(135deg,#ff3b3b,#ff8c00)" title="Piros" onclick="setTheme(this.dataset.theme)"></button>
+      <button class="theme-btn" data-theme="green" style="background:linear-gradient(135deg,#00c853,#64dd17)" title="Zöld" onclick="setTheme(this.dataset.theme)"></button>
+      <button class="theme-btn" data-theme="blue" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" title="Kék" onclick="setTheme(this.dataset.theme)"></button>
+      <button class="theme-btn" data-theme="gold" style="background:linear-gradient(135deg,#ffd700,#ffab00)" title="Fekete-arany" onclick="setTheme(this.dataset.theme)"></button>
+      <button class="theme-btn" data-theme="purple" style="background:linear-gradient(135deg,#aa00ff,#e040fb)" title="Lila" onclick="setTheme(this.dataset.theme)"></button>
     </div>
   </div>
 </div>
@@ -2831,27 +2831,23 @@ function clearStats(){ state.stats={}; state.h2h={}; state.goldenArrow={}; saveS
 
 // ===== THEMES =====
 function setTheme(theme){
-  document.body.className = theme ? `theme-${theme}` : '';
-  localStorage.setItem('dp_theme', theme);
+  document.body.className = theme ? 'theme-'+theme : '';
+  localStorage.setItem('dp_theme', theme||'');
   // Update active button
   document.querySelectorAll('.theme-btn').forEach(btn=>{
     btn.classList.remove('active');
-    const onclick = btn.getAttribute('onclick');
-    if(onclick && onclick.includes(`'${theme}'`)) btn.classList.add('active');
+    if((btn.dataset.theme||'') === (theme||'')) btn.classList.add('active');
   });
   showToast('✨ Téma változtatva!');
 }
 
 function loadTheme(){
   const saved = localStorage.getItem('dp_theme') || '';
-  document.body.className = saved ? `theme-${saved}` : '';
-  // Mark active button
+  document.body.className = saved ? 'theme-'+saved : '';
   setTimeout(()=>{
     document.querySelectorAll('.theme-btn').forEach(btn=>{
       btn.classList.remove('active');
-      const onclick = btn.getAttribute('onclick');
-      if(onclick && onclick.includes(`'${saved}'`)) btn.classList.add('active');
-      if(!saved && onclick && onclick.includes("setTheme('')")) btn.classList.add('active');
+      if((btn.dataset.theme||'') === saved) btn.classList.add('active');
     });
   }, 100);
 }
