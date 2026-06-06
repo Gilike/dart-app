@@ -679,6 +679,7 @@
       <div id="koPairingInfo" class="notice" style="margin-bottom:8px"></div>
       <div id="koBracketList"></div>
       <button class="btn btn-primary" id="generateKoBtn" style="display:none;margin-top:8px" onclick="generateKnockoutPhase()">🎲 KIESÉSES KÖR SORSOLÁSA</button>
+      <button class="btn btn-ghost" id="manualPairBtn" style="display:none;margin-top:6px;font-size:13px" onclick="showManualPairAdjust()">✏️ PÁROSÍTÁS MÓDOSÍTÁSA</button>
     </div>
     <div id="bracketActions" style="display:none;margin-top:11px">
       <button class="btn btn-danger" onclick="clearTournament()">TORNA TÖRLÉSE</button>
@@ -1453,8 +1454,11 @@ function submitScore(){
   const score=parseInt(currentInput);
   const err=getScoreError(score);
   if(err){ showToast(err); currentInput=''; renderInputDisplay(); return; }
-  currentInput=''; renderInputDisplay(); // Clear immediately
+  currentInput=''; renderInputDisplay();
+  submitScoreValue(score);
+}
 
+function submitScoreValue(score){
   // Route to team mode
   if(game.matchType==='teams' && game.teams){ submitScoreTeam(score); return; }
 
@@ -1474,11 +1478,6 @@ function submitScore(){
   });
   if(game.undoStack.length>10) game.undoStack.shift();
 
-  // Double out check: if outRule is double, score of 1 remaining is already bust (handled)
-  // Additional: if remaining would be odd and <= 1, bust
-  const isDoubleOut = game.outRule === 'double';
-  // With double out, you cannot finish on 1 (no double 0.5 exists)
-  // remaining===1 is already bust below
   if(remaining<0||remaining===1){
     player.dartsThrown+=3; player.legDartsThrown+=3;
     game.log.push({player:player.name,score,bust:true,remaining:player.score});
@@ -1489,14 +1488,12 @@ function submitScore(){
     player.dartsThrown+=3; player.legDartsThrown+=3;
     player.pointsScored+=score;
     game.log.push({player:player.name,score,bust:false,remaining});
-    // Golden arrow tracking
     updateGoldenArrow(player.name, score, remaining===0, null);
     game.legLog.push({player:player.name,score,bust:false,remaining});
     if(remaining===0){
       const needed=Math.ceil(game.legs/2);
       player.legsWon++;
       saveLegToHistory(player.name);
-      // Play checkout then legwon/winner in sequence
       if(player.legsWon>=needed){
         playSoundQueue(['scheckout','swinner']);
         endGame(player,false); return;
@@ -1509,8 +1506,11 @@ function submitScore(){
   }
 
   advancePlayer();
-  if(!game.isPubGame && game.players.every(p=>p.legDartsThrown>=game.pubLimit)){
-    triggerPubGame(); return;
+  // PubGame: triggers when ALL players have thrown >= pubLimit darts
+  if(!game.isPubGame){
+    if(game.players.every(p=>p.legDartsThrown>=game.pubLimit)){
+      triggerPubGame(); return;
+    }
   }
   renderGame();
 }
@@ -1668,13 +1668,10 @@ function submitScoreTeam(score){
   game.currentTeam = (game.currentTeam+1) % 2;
   currentInput='';
 
-  // PubGame check - count total darts thrown per team member
+  // PubGame: triggers when BOTH teams have thrown >= pubLimit darts total
   if(!game.isPubGame){
-    // Each round = 3 darts per player, 2 players per team
-    // pubLimit is per player, so check if any player exceeded it
-    const dartsPerRound = game.teams[0].members.length; // turns per team per round
-    const estimatedDartsPerPlayer = game.roundNumber * 3;
-    if(estimatedDartsPerPlayer >= game.pubLimit){
+    const bothTeamsOverLimit = game.teams.every(t=>(t.dartsThrown||0) >= game.pubLimit);
+    if(bothTeamsOverLimit){
       triggerPubGameTeam(); return;
     }
   }
@@ -2305,10 +2302,20 @@ function generateKnockoutPhase(){
     });
   });
 
+  // Always generate auto first, then offer manual adjustment
+  const autoMatches = generateAutoKoPairing(qualifiers, koLegs);
+  t.koMatches = autoMatches;
+  t.koGenerated = true;
+  saveState();
+  renderBracket();
+  
+  // If manual mode, show adjustment UI
   if(pairingMode==='manual'){
-    renderManualKoPairing(qualifiers, koLegs);
+    setTimeout(()=>renderManualKoPairing(qualifiers, koLegs), 300);
     return;
   }
+  showToast('🎲 Kieséses kör sorsolva!');
+  return; // skip the rest
 
   // AUTO PAIRING: A1 vs B2, B1 vs A2, etc. + BYE for group winners if odd
   const koMatches=generateAutoKoPairing(qualifiers, koLegs);
@@ -2317,6 +2324,20 @@ function generateKnockoutPhase(){
   saveState();
   renderBracket();
   showToast('🎲 Kieséses kör sorsolva!');
+}
+
+function showManualPairAdjust(){
+  const t=state.tournament;
+  if(!t||!t.koMatches) return;
+  const adv=t.advancePerGroup||2;
+  const groupStandings=getGroupStandings();
+  const qualifiers=[];
+  groupStandings.forEach(({groupName,standings})=>{
+    standings.slice(0,adv).forEach((row,rank)=>{
+      qualifiers.push({groupName,rank:rank+1,player:row.name});
+    });
+  });
+  renderManualKoPairing(qualifiers, t.koLegs||3);
 }
 
 function generateAutoKoPairing(qualifiers, koLegs){
@@ -2493,6 +2514,8 @@ function checkAndGenerateNextKoRound(){
   t.koMatches.push(...nextMatches);
   saveState();
   showToast(`🎯 ${getRoundName(currentRound+1, winners.length)} kezdődik!`, 2500);
+  // Re-render bracket to show new round
+  setTimeout(renderBracket, 500);
 }
 
 function getRoundName(round, numPlayers){
@@ -2562,6 +2585,8 @@ function renderBracket(){
       if(t.koGenerated){
         // Show KO bracket
         if(genBtn) genBtn.style.display='none';
+        const manBtn=document.getElementById('manualPairBtn');
+        if(manBtn) manBtn.style.display='block';
         renderKoBracket();
       } else if(groupsDone){
         if(genBtn) genBtn.style.display='block';
@@ -2738,7 +2763,9 @@ function saveResult(){
     m.status='done';
     pendingResultIdx=null;
   }
-  saveState(); closeModal('resultModal'); renderBracket();
+  saveState(); 
+  closeModal('resultModal'); 
+  renderBracket();
   showToast(`✅ Eredmény mentve!`);
 }
 function startTourneyMatch(i){
@@ -2924,11 +2951,32 @@ function buildStatCard(g){
   document.getElementById('scMode').textContent = `${g.mode} · ${g.outRule==='double'?'DO':'SO'}`;
 }
 
+// ===== KEYBOARD INPUT =====
+document.addEventListener('keydown', function(e){
+  if(!game || game.isPubGame) return;
+  const key = e.key;
+  if(key >= '0' && key <= '9'){
+    e.preventDefault();
+    if(dartMode) return; // dart mode uses its own input
+    numInput(key);
+  } else if(key === 'Backspace' || key === 'Delete'){
+    e.preventDefault();
+    if(dartMode) return;
+    numDel();
+  } else if(key === 'Enter'){
+    e.preventDefault();
+    if(dartMode) return;
+    submitScore();
+  } else if(key === 'Escape'){
+    currentInput='';
+    renderInputDisplay();
+  }
+});
+
 // ===== INIT =====
 onTourneyTypeChange();
 initVoice();
 loadTheme();
-setTimeout(updateApiKeyBanner, 100);
 </script>
 </body>
 </html>
