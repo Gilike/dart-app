@@ -14,6 +14,23 @@
     --accent:#ff3b3b;--accent2:#ff8c00;--gold:#ffd700;--green:#00e676;
     --blue:#4fc3f7;--text:#f0f0f8;--muted:#6b6b8a;--radius:12px;
   }
+  /* THEMES */
+  body.theme-green {
+    --bg:#050f08;--surface:#0a1a0f;--surface2:#0f2416;--border:#1a3d25;
+    --accent:#00c853;--accent2:#64dd17;--muted:#4a7a5a;
+  }
+  body.theme-blue {
+    --bg:#050a14;--surface:#0a1020;--surface2:#0f1a2e;--border:#1a2a4a;
+    --accent:#1565c0;--accent2:#42a5f5;--muted:#3a5a8a;
+  }
+  body.theme-gold {
+    --bg:#080600;--surface:#120e00;--surface2:#1a1400;--border:#3d3000;
+    --accent:#ffd700;--accent2:#ffab00;--muted:#7a6a00;--text:#fff8e1;
+  }
+  body.theme-purple {
+    --bg:#08050f;--surface:#10081a;--surface2:#180f26;--border:#2d1a4a;
+    --accent:#aa00ff;--accent2:#e040fb;--muted:#5a3a8a;
+  }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;min-height:100vh;overflow-x:hidden}
   .screen{display:none;min-height:100vh;padding:16px;padding-bottom:40px;animation:fadeIn .25s ease}
@@ -260,6 +277,35 @@
   .team-a{background:rgba(255,59,59,.2);color:var(--accent);border:1px solid rgba(255,59,59,.3)}
   .team-b{background:rgba(79,195,247,.2);color:var(--blue);border:1px solid rgba(79,195,247,.3)}
 
+  /* THEME BUTTONS */
+  .theme-btn{width:40px;height:40px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:all .2s;position:relative;display:inline-block}
+  .theme-btn:active{transform:scale(.88)}
+  .theme-btn.active{border-color:white;box-shadow:0 0 0 2px var(--accent),0 0 14px rgba(255,255,255,.4)}
+
+  /* STAT CARD */
+  .stat-card-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:2000;display:flex;align-items:center;justify-content:center;padding:16px}
+  .stat-card-box{width:100%;max-width:380px;background:var(--bg);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .sc-top{background:linear-gradient(135deg,var(--accent),var(--accent2));padding:20px;text-align:center}
+  .sc-app-name{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:6px;color:rgba(255,255,255,.7);margin-bottom:8px}
+  .sc-winner-name{font-family:'Bebas Neue',cursive;font-size:52px;letter-spacing:4px;color:white;line-height:1;margin-bottom:4px;text-shadow:0 2px 10px rgba(0,0,0,.3)}
+  .sc-winner-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.8)}
+  .sc-body{padding:16px}
+  .sc-players-row{display:flex;gap:10px;margin-bottom:14px}
+  .sc-player-stat{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center}
+  .sc-player-stat.winner-stat{border-color:var(--accent);background:rgba(255,59,59,.08)}
+  .sc-player-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .sc-player-avg{font-family:'Bebas Neue',cursive;font-size:42px;letter-spacing:2px;color:var(--text);line-height:1}
+  .sc-player-avg-label{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-top:2px}
+  .sc-player-detail{font-size:11px;color:var(--muted);margin-top:6px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px}
+  .sc-highlights{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+  .sc-highlight{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+  .sc-highlight-val{font-family:'Bebas Neue',cursive;font-size:28px;color:var(--accent);letter-spacing:2px;line-height:1}
+  .sc-highlight-label{font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;margin-top:2px;text-transform:uppercase}
+  .sc-footer{background:var(--surface);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+  .sc-footer-date{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:var(--muted);letter-spacing:1px}
+  .sc-footer-mode{font-family:'Bebas Neue',cursive;font-size:16px;letter-spacing:2px;color:var(--accent)}
+  .sc-close-btn{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:32px;height:32px;color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
   .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1px;color:var(--text);z-index:9999;transition:transform .3s cubic-bezier(.175,.885,.32,1.275);white-space:nowrap}
   .toast.show{transform:translateX(-50%) translateY(0)}
 
@@ -310,6 +356,16 @@
     <button class="btn btn-secondary" onclick="showScreen('screen-leaderboard')">📊 STATISZTIKÁK</button>
     <button class="btn btn-ghost" onclick="showScreen('screen-players')">👥 JÁTÉKOSOK KEZELÉSE</button>
     <button class="btn btn-ghost" onclick="openVoiceSettings()">🔊 HANG BEÁLLÍTÁS</button>
+  </div>
+  <div style="margin-top:16px">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px;text-align:center">TÉMA</div>
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="theme-btn" onclick="setTheme('')" style="background:linear-gradient(135deg,#ff3b3b,#ff8c00)" title="Piros"></button>
+      <button class="theme-btn" onclick="setTheme('green')" style="background:linear-gradient(135deg,#00c853,#64dd17)" title="Zöld"></button>
+      <button class="theme-btn" onclick="setTheme('blue')" style="background:linear-gradient(135deg,#1565c0,#42a5f5)" title="Kék"></button>
+      <button class="theme-btn" onclick="setTheme('gold')" style="background:linear-gradient(135deg,#ffd700,#ffab00)" title="Fekete-arany"></button>
+      <button class="theme-btn" onclick="setTheme('purple')" style="background:linear-gradient(135deg,#aa00ff,#e040fb)" title="Lila"></button>
+    </div>
   </div>
 </div>
 
@@ -524,6 +580,7 @@
     <div id="winMethod" class="win-sub">NYERT!</div>
     <div id="winStats" class="card" style="text-align:left;margin-bottom:18px"></div>
     <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-green" onclick="showStatCard()" style="background:linear-gradient(135deg,#00c853,#64dd17);color:white;box-shadow:0 4px 16px rgba(0,200,83,.3)">📸 STAT KÁRTYA MEGOSZTÁS</button>
       <button class="btn btn-blue" onclick="showLegHistory()" style="margin-bottom:0">📋 LEG HISTORY</button>
       <button class="btn btn-primary" onclick="startRematch()">🔄 VISSZAVÁGÓ</button>
       <button class="btn btn-secondary" onclick="showScreen('screen-setup')">ÚJ MECCS</button>
@@ -710,6 +767,28 @@
 </div>
 
 <div id="toast" class="toast"></div>
+
+<!-- STAT CARD OVERLAY -->
+<div id="statCardOverlay" class="stat-card-overlay" style="display:none" onclick="closeStatCard(event)">
+  <div class="stat-card-box" id="statCardBox">
+    <div style="position:relative">
+      <div class="sc-top" id="scTop">
+        <div class="sc-app-name">🎯 DART PRO</div>
+        <div class="sc-winner-name" id="scWinnerName">JÁTÉKOS</div>
+        <div class="sc-winner-sub" id="scWinnerSub">NYERT!</div>
+      </div>
+      <button class="sc-close-btn" onclick="closeStatCard()">×</button>
+    </div>
+    <div class="sc-body">
+      <div class="sc-players-row" id="scPlayersRow"></div>
+      <div class="sc-highlights" id="scHighlights"></div>
+    </div>
+    <div class="sc-footer">
+      <div class="sc-footer-date" id="scDate"></div>
+      <div class="sc-footer-mode" id="scMode"></div>
+    </div>
+  </div>
+</div>
 
 
 <script>
@@ -1779,6 +1858,15 @@ function endGame(winner, isPub){
   saveState();
   playSoundQueue(['swinner']);
   const avg=calcAvg(winner.pointsScored,winner.dartsThrown);
+  // Store game snapshot for stat card
+  lastGameData = {
+    players: game.players.map(p=>({...p})),
+    log: [...game.log],
+    mode: game.mode,
+    outRule: game.outRule,
+    roundNumber: game.roundNumber,
+    legs: game.legs,
+  };
   document.getElementById('winName').textContent=winner.name;
   document.getElementById('winMethod').textContent=isPub?'🍺 PUB GAME-EN NYERT!':'NYERT!';
   document.getElementById('winStats').innerHTML=`
@@ -2741,10 +2829,109 @@ function renderLeaderboard(){
 function confirmClearStats(){ document.getElementById('clearStatsModal').classList.add('show'); }
 function clearStats(){ state.stats={}; state.h2h={}; state.goldenArrow={}; saveState(); closeModal('clearStatsModal'); renderLeaderboard(); showToast('Statisztikák törölve'); }
 
+// ===== THEMES =====
+function setTheme(theme){
+  document.body.className = theme ? `theme-${theme}` : '';
+  localStorage.setItem('dp_theme', theme);
+  // Update active button
+  document.querySelectorAll('.theme-btn').forEach(btn=>{
+    btn.classList.remove('active');
+    const onclick = btn.getAttribute('onclick');
+    if(onclick && onclick.includes(`'${theme}'`)) btn.classList.add('active');
+  });
+  showToast('✨ Téma változtatva!');
+}
+
+function loadTheme(){
+  const saved = localStorage.getItem('dp_theme') || '';
+  document.body.className = saved ? `theme-${saved}` : '';
+  // Mark active button
+  setTimeout(()=>{
+    document.querySelectorAll('.theme-btn').forEach(btn=>{
+      btn.classList.remove('active');
+      const onclick = btn.getAttribute('onclick');
+      if(onclick && onclick.includes(`'${saved}'`)) btn.classList.add('active');
+      if(!saved && onclick && onclick.includes("setTheme('')")) btn.classList.add('active');
+    });
+  }, 100);
+}
+
+// ===== STAT CARD =====
+let lastGameData = null; // store game data for stat card
+
+function showStatCard(){
+  if(!game && !lastGameData){ showToast('⚠️ Nincs meccs adat!'); return; }
+  const g = lastGameData || game;
+  buildStatCard(g);
+  document.getElementById('statCardOverlay').style.display = 'flex';
+}
+
+function closeStatCard(e){
+  if(!e || e.target === document.getElementById('statCardOverlay')){
+    document.getElementById('statCardOverlay').style.display = 'none';
+  }
+}
+
+function buildStatCard(g){
+  // Winner info
+  const winnerName = document.getElementById('winName').textContent;
+  const winMethod = document.getElementById('winMethod').textContent;
+  document.getElementById('scWinnerName').textContent = winnerName;
+  document.getElementById('scWinnerSub').textContent = winMethod;
+
+  // Players row
+  const playersRow = document.getElementById('scPlayersRow');
+  if(g.players && g.players.length){
+    playersRow.innerHTML = g.players.map(p=>{
+      const avg = calcAvg(p.pointsScored, p.dartsThrown);
+      const isWinner = p.name === winnerName;
+      return `<div class="sc-player-stat ${isWinner?'winner-stat':''}">
+        <div class="sc-player-name">${isWinner?'🏆 ':''}${esc(p.name)}</div>
+        <div class="sc-player-avg">${avg}</div>
+        <div class="sc-player-avg-label">3-nyilas átlag</div>
+        <div class="sc-player-detail">${p.dartsThrown} nyíl · ${p.legsWon} láb</div>
+      </div>`;
+    }).join('');
+  } else {
+    playersRow.innerHTML = '';
+  }
+
+  // Highlights
+  const highlights = document.getElementById('scHighlights');
+  const winner = g.players ? g.players.find(p=>p.name===winnerName) : null;
+  const best180 = g.players ? g.players.some(p=>p._had180) : false;
+
+  // Get best score from log
+  const bestScore = g.log ? Math.max(...g.log.filter(l=>!l.bust).map(l=>l.score), 0) : 0;
+  // Get checkout score (last entry with remaining=0)
+  const checkoutEntry = g.log ? [...g.log].reverse().find(l=>l.remaining===0&&!l.bust&&!l.pub) : null;
+  const checkoutScore = checkoutEntry ? checkoutEntry.score : 0;
+  const totalRounds = g.roundNumber || 0;
+
+  highlights.innerHTML = `
+    <div class="sc-highlight">
+      <div class="sc-highlight-val">${bestScore||'-'}</div>
+      <div class="sc-highlight-label">Max dobás</div>
+    </div>
+    <div class="sc-highlight">
+      <div class="sc-highlight-val">${checkoutScore||'-'}</div>
+      <div class="sc-highlight-label">Kiszálló</div>
+    </div>
+    <div class="sc-highlight">
+      <div class="sc-highlight-val">${totalRounds||'-'}</div>
+      <div class="sc-highlight-label">Körök</div>
+    </div>
+  `;
+
+  // Footer
+  document.getElementById('scDate').textContent = new Date().toLocaleDateString('hu-HU');
+  document.getElementById('scMode').textContent = `${g.mode} · ${g.outRule==='double'?'DO':'SO'}`;
+}
+
 // ===== INIT =====
 onTourneyTypeChange();
 initVoice();
-// Show settings on home screen if no API key
+loadTheme();
 setTimeout(updateApiKeyBanner, 100);
 </script>
 </body>
