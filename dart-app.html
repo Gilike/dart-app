@@ -2608,9 +2608,9 @@ function renderKoBracket(){
       } else if(m.status==='done'){
         html+=`<div class="ko-match">
           <div class="ko-players">
-            <span class="ko-player" style="${m.winner===m.p1?'color:var(--green);font-weight:700':''">${esc(m.p1)}</span>
+            <span class="ko-player" style="${m.winner===m.p1?'color:var(--green);font-weight:700':''}">${esc(m.p1)}</span>
             <span class="ko-vs">VS</span>
-            <span class="ko-player" style="${m.winner===m.p2?'color:var(--green);font-weight:700':''">${esc(m.p2)}</span>
+            <span class="ko-player" style="${m.winner===m.p2?'color:var(--green);font-weight:700':''}">${esc(m.p2)}</span>
           </div>
           <div class="ko-status-done">✓ ${esc(m.winner)} nyert (${m.legsP1}:${m.legsP2})</div>
         </div>`;
@@ -2633,7 +2633,7 @@ function renderKoBracket(){
   el.innerHTML=html;
   // Check if current round done, offer next
   checkAndGenerateNextKoRound();
-}}}
+}
 function renderMatchCard(m,idx){
   const done=m.status==='done';
   const sc=done&&m.legsP1!=null?` (${m.legsP1}:${m.legsP2})`:'';
